@@ -1,46 +1,30 @@
-dnl $Id: configure.ac,v 1.5 2005/06/18 12:50:50 murrayc Exp $ -*- m4 -*-
+AC_INIT([PrefixSuffix],[0.5.0],[http://bugzilla.gnome.org/enter_bug.cgi?product=PrefixSuffix],[prefixsuffix])
+AC_PREREQ(2.63)
 
-dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.13)
+AC_CONFIG_SRCDIR([src/main.cc])
+AC_CONFIG_MACRO_DIR([macros])
+AC_CONFIG_HEADERS([config.h])
 
-AC_INIT(src/main.cc)
-
-AM_CONFIG_HEADER(config.h)
-
-dnl -----------------------------------------------
-dnl Package name and version number (user defined)
-dnl -----------------------------------------------
-
-PACKAGE=prefixsuffix
-VERSION=0.5.0
-
-dnl -----------------------------------------------
-dnl Package name and version number (DO NOT MODIFY)
-dnl -----------------------------------------------
-
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-
-GNOME_COMMON_INIT
+AM_INIT_AUTOMAKE([1.10 -Wno-portability no-define nostdinc tar-ustar])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AM_MAINTAINER_MODE
+AC_ARG_VAR([ACLOCAL_FLAGS], [aclocal flags, e.g. -I <macro dir>])
 
 dnl Checks for programs.
 AC_PROG_CXX
 
 dnl Checks for libraries.
 PKG_CHECK_MODULES(DEPS, bakery-2.4)
-AC_SUBST(DEPS_CFLAGS)
-AC_SUBST(DEPS_LIBS)
 
 
-#Internationalisation:
-GETTEXT_PACKAGE=$PACKAGE
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
-		   [The domain name to use with gettext.])
+# i18n
+IT_PROG_INTLTOOL([0.35])
 
-ALL_LINGUAS="hu de"
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
 
-AM_GLIB_GNU_GETTEXT
-AC_PROG_INTLTOOL
+AC_SUBST([GETTEXT_PACKAGE], [prefixsuffix])
+AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE_TARNAME], [Define to the gettext package name.])
 
 
 dnl Create makefiles

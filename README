@@ -1,1 +1,1 @@
-This is meant as a simple demonstration of the build files required for a gtkmm application, although there's nothing here that's different than any other application. This is not meant as an example of code.
+A GUI application that renames batches of files by changing the beginning or end of their names.

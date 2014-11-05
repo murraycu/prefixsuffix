@@ -1,0 +1,33 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-12-05 17:30+0100\n"
+"PO-Revision-Date: 2002-01-09 18:57GMT\n"
+"Last-Translator: Murray Cumming <murrayc@usa.net>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: src/mainwindow.cc:32
+msgid "Choose directory"
+msgstr ""
+
+#: prefixsuffix.desktop.in.h:1
+msgid "Hello, gnomemm World!"
+msgstr ""
+
+#: prefixsuffix.desktop.in.h:2
+msgid "Sample application for C++ programmers"
+msgstr ""
+
+#~ msgid "Click Me"
+#~ msgstr "Click mich"
+
+#~ msgid "The button was clicked."
+#~ msgstr "Der Schalter wurde gedrückt."

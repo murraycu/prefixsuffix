@@ -1,0 +1,18 @@
+0.5.0:
+
+* Ported to gtkmm 2.4.
+* More HIG-compliant UI.
+
+0.4.0:
+
+* Now uses gnome-vfsmm, so any URI should work,
+  not just directories on the local file system.
+* There is now a progress bar.
+* It now shows dialogs if incorrect data has 
+  been entered, and if there are runtime failures.
+
+0.3.0:
+
+* Updated for latest Bakery API, 
+  which no longer depends on gnomemm.
+* Some UI improvement.

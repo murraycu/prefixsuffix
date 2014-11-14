@@ -1,4 +1,29 @@
-SUBDIRS = src po help docs
+# Put compiled object files into the same sub-directory as their sources
+AUTOMAKE_OPTIONS = subdir-objects
+
+SUBDIRS = po help docs
+
+
+
+# Let the code know where the glade dir is:
+INCLUDES =  -DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\"
+
+bin_PROGRAMS = prefixsuffix
+
+#List of source files needed to build the executable:
+prefixsuffix_SOURCES = \
+	src/main.cc \
+	mainwindow.h \
+	mainwindow.cc
+	
+EXTRA_DIST = \
+	src/prefixsuffix-logo.png \
+	src/prefixsuffix.glade
+
+prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) -I$(top_builddir) -I$(top_srcdir)
+prefixsuffix_LDADD = $(DEPS_LIBS)
+
+
 
 # Desktop entry
 desktopdir		= $(datadir)/applications
@@ -12,3 +37,13 @@ icon_DATA = prefixsuffix.png
 
 EXTRA_DIST = $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
+
+
+gladedir = $(datadir)/prefixsuffix/glade/
+
+# Install the glade file:
+# The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/
+# Because that's how gladedir is defined.
+glade_DATA = prefixsuffix.glade
+EXTRA_DIST = $(glade_DATA) 
+

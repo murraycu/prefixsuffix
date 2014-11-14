@@ -14,7 +14,7 @@ dnl Checks for programs.
 AC_PROG_CXX
 
 dnl Checks for libraries.
-PKG_CHECK_MODULES(DEPS, bakery-2.4)
+PKG_CHECK_MODULES(DEPS, gtkmm-3.0)
 
 
 # i18n

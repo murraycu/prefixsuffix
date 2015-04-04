@@ -2,3 +2,6 @@ src/main.cc
 src/mainwindow.cc
 
 prefixsuffix.desktop.in
+
+data/prefixsuffix.glade
+

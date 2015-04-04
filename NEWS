@@ -1,3 +1,8 @@
+0.6.0:
+
+* Ported to gtkmm 3, removing dependencies on libglademm, gnome-vfsmm 
+  and bakery.
+
 0.5.0:
 
 * Ported to gtkmm 2.4.

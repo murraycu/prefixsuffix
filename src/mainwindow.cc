@@ -19,12 +19,9 @@
  */
 
 #include "mainwindow.h"
-//#include <libgnome/gnome-i18n.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menubar.h>
-//#include <libgnomeuimm/about.h>
 #include <gtkmm/messagedialog.h>
-#include <bakery/Utilities/BusyCursor.h>
 #include <iostream>
 #include <glibmm/i18n.h>
 
@@ -160,6 +157,41 @@ void MainWindow::on_radio_suffix_clicked()
 }
 
 void MainWindow::on_button_process()
+{
+  set_ui_locked();
+  do_rename();
+  set_ui_locked(false);
+}
+
+void MainWindow::set_ui_locked(bool locked)
+{
+  set_sensitive(!locked);
+
+  Glib::RefPtr<Gdk::Window> window = get_window();
+  if(!window)
+    return;
+
+  Glib::RefPtr<Gdk::Cursor> cursor;
+  if(locked)
+  {
+    m_old_cursor = window->get_cursor();
+    cursor = Gdk::Cursor::create(get_display(), Gdk::WATCH);
+  }
+  else
+  {
+    cursor = m_old_cursor;
+    m_old_cursor.reset();
+  }
+
+  window->set_cursor(cursor);
+
+  //Force the GUI to update:
+  //TODO: Make sure that gtkmm has some non-Gtk::Main API for this:
+  while(gtk_events_pending())
+    gtk_main_iteration_do(true);
+}
+
+void MainWindow::do_rename()
 {
   //Check that there is enough information:
   const Glib::ustring uri = m_pEntryPath->get_uri();

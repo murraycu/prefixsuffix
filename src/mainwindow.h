@@ -28,7 +28,7 @@ public:
   MainWindow();
   virtual ~MainWindow();
 
-protected:
+private:
 
   virtual bool build_list_of_files();
   virtual bool build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
@@ -44,6 +44,12 @@ protected:
   virtual void on_button_process();
   virtual void on_button_close();
 
+  void do_rename();
+  void set_ui_locked(bool locked = true);
+
+  Glib::RefPtr<Gdk::Cursor> m_old_cursor;
+
+protected:
   virtual void on_hide(); //override.
 
   Glib::RefPtr<Gtk::Builder> m_refGlade;

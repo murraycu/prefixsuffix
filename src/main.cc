@@ -30,7 +30,6 @@ int
 main(int argc, char* argv[])
 {
   Gtk::Main main(argc, argv);
-  Bakery::init();
 
   MainWindow app;
 

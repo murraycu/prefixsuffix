@@ -37,14 +37,33 @@ MainWindow::MainWindow()
 
   //Glade:
   //Look for the installed .glade file:
-  m_refGlade = Gnome::Glade::Xml::create(PREFIXSUFFIX_GLADEDIR "prefixsuffix.glade");
+  try
+  {
+    m_refGlade = Gtk::Builder::create_from_file(PREFIXSUFFIX_GLADEDIR "prefixsuffix.glade");
+  }
+  catch(const Gtk::BuilderError& ex)
+  {
+    std::cerr << G_STRFUNC << ": BuilderError Exception: " << ex.what() << std::endl;
+  }
+  catch(const Glib::MarkupError& ex)
+  {
+    std::cerr << G_STRFUNC << ": MarkupError exception:" << ex.what() << std::endl;
+  }
+  catch(const Glib::FileError& ex)
+  {
+    std::cerr << G_STRFUNC << ": FileError: exception" << ex.what() << std::endl;
+  }
+  catch(const Glib::Error& ex)
+  {
+    std::cerr << G_STRFUNC << ": Exception of unexpected type: " << ex.what() << std::endl;
+  }
 
   //This doesn't actually work, because an invalid GladeXML object is created. I filed a bug:
   if(!m_refGlade)
   {
     //Try the local directory. Maybe somebody is just running this without installing it:
     g_warning("Prefix: Failed to find installed glade file. Looking for it in the current directory.\n");
-    m_refGlade = Gnome::Glade::Xml::create("prefixsuffix.glade");
+    m_refGlade = Gtk::Builder::create_from_file("prefixsuffix.glade");
   }
 
   //If it still can't be found:

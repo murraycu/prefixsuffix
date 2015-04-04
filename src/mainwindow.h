@@ -33,7 +33,7 @@ protected:
 
   virtual bool on_transfer_progress(const Gnome::Vfs::Transfer::ProgressInfo& info);
 
-  Glib::RefPtr<Gnome::Glade::Xml> m_refGlade;
+  Glib::RefPtr<Gtk::Builder> m_refGlade;
 
   // Widgets
 

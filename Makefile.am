@@ -53,6 +53,6 @@ gladedir = $(datadir)/prefixsuffix/glade/
 # Install the glade file:
 # The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/
 # Because that's how gladedir is defined.
-glade_DATA = prefixsuffix.glade
+glade_DATA = src/prefixsuffix.glade
 EXTRA_DIST = $(glade_DATA) 
 

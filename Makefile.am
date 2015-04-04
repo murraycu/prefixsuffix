@@ -6,7 +6,6 @@ SUBDIRS = po help docs
 
 
 # Let the code know where the glade dir is:
-INCLUDES =  -DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\"
 
 bin_PROGRAMS = prefixsuffix
 
@@ -27,9 +26,12 @@ EXTRA_DIST = \
 	data/prefixsuffix-logo.png \
 	data/prefixsuffix.glade
 
+gladedir = $(datadir)/prefixsuffix/glade/
+
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
-	-I$(top_builddir) -I$(top_srcdir)
+	-I$(top_builddir) -I$(top_srcdir) \
+	-DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\"
 prefixsuffix_LDADD = $(DEPS_LIBS)
 
 
@@ -47,8 +49,6 @@ icon_DATA = prefixsuffix.png
 EXTRA_DIST = $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
 
-
-gladedir = $(datadir)/prefixsuffix/glade/
 
 # Install the glade file:
 # The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/

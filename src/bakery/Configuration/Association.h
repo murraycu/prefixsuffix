@@ -24,8 +24,6 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/range.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/combo.h>
-#include <gtkmm/optionmenu.h>
 
 namespace Bakery
 {
@@ -326,123 +324,6 @@ public:
 };
 
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-//Gtk::OptionMenu specializatipn:
-//Note that OptionMenu is deprecated in favour of ComboBox anyway.
-
-template<>
-class Association<Gtk::OptionMenu>  : public AssociationCreation<Gtk::OptionMenu>
-{
-public:
-  typedef Gtk::OptionMenu type_widget;
-  
-  void connect_widget(Callback widget_changed)
-  {
-    m_widget.signal_changed().connect(widget_changed);
-  }
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  void load_widget()
-#else
-  void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif
-  {
-    // Only set it if it has changed (avoids excess notifications).
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-    int val = get_conf_client()->get_int(get_key());
-#else
-    int val = get_conf_client()->get_int(get_key(), error);
-    if (error.get() != NULL)
-#endif
-    if (m_widget.get_history() != val)
-      m_widget.set_history(guint(val));
-  }
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  void save_widget()
-#else
-  void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
-  {
-    // Only set it if it has changed (avoids excess notifications).
-    int val = m_widget.get_history();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-    int existing_val = get_conf_client()->get_int(get_key());
-#else
-    int existing_val = get_conf_client()->get_int(get_key(), error);
-    if (error.get() != NULL)
-#endif
-          if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-            get_conf_client()->set(get_key(), val);
-#else
-            get_conf_client()->set(get_key(), val, error);
-#endif
-      }
-      
-      Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-      : AssociationCreation<type_widget>(full_key, widget, instant)
-      {}
-    };
-
-    //Gtk::Combo specializatipn:
-    //Note that Combo is deprecated in favour of ComboBox anyway.
-
-    template<>
-    class Association<Gtk::Combo>  : public AssociationCreation<Gtk::Combo>
-    {
-    public:
-      typedef Gtk::Combo type_widget;
-      
-      void connect_widget(Callback widget_changed)
-      {
-        m_widget.get_entry()->signal_changed().connect(widget_changed);
-      }
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-      void load_widget()
-#else
-      void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif
-      {
-        // Only set it if it has changed (avoids excess notifications).
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-        Glib::ustring val = get_conf_client()->get_string(get_key());
-#else
-        Glib::ustring val = get_conf_client()->get_string(get_key(), error);
-        if (error.get() != NULL)
-#endif
-          if (m_widget.get_entry()->get_text() != val)
-            m_widget.get_entry()->set_text(val);
-      }
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-      void save_widget()
-#else
-      void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
-      {
-        // Only set it if it has changed (avoids excess notifications).
-        Glib::ustring val = m_widget.get_entry()->get_text();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-        Glib::ustring existing_val = get_conf_client()->get_string(get_key());
-#else
-        Glib::ustring existing_val = get_conf_client()->get_string(get_key(), error);
-        if (error.get() != NULL)
-#endif
-          if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-        get_conf_client()->set(get_key(), val);
-#else
-        get_conf_client()->set(get_key(), val, error);
-#endif
-  }
-
-  Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-  : AssociationCreation<type_widget>(full_key, widget, instant)
-  {}
-};
-#endif // !GTKMM_DISABLE_DEPRECATED
 
 } //namespace Conf
 

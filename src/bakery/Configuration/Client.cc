@@ -73,12 +73,6 @@ void Client::add_implementation(const Glib::ustring& key, Gtk::Widget& widget, b
     add_association(key, static_cast<Gtk::ToggleButton&>(widget), instant);
   else if (dynamic_cast<Gtk::Range*>(&widget))
     add_association(key, static_cast<Gtk::Range&>(widget), instant);
-#ifndef GTKMM_DISABLE_DEPRECATED
-  else if (dynamic_cast<Gtk::OptionMenu*>(&widget))
-    add_association(key, static_cast<Gtk::OptionMenu&>(widget), instant);
-  else if (dynamic_cast<Gtk::Combo*>(&widget))
-    add_association(key, static_cast<Gtk::Combo&>(widget), instant);
-#endif // !GTKMM_DISABLE_DEPRECATED
   // TODO: Support for connecting a Gtk::Curve widget to an array of floating point values
 }
 

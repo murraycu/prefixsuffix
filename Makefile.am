@@ -24,8 +24,8 @@ prefixsuffix_SOURCES = \
 	src/bakery/Utilities/sharedptr.h
 	
 EXTRA_DIST = \
-	src/prefixsuffix-logo.png \
-	src/prefixsuffix.glade
+	data/prefixsuffix-logo.png \
+	data/prefixsuffix.glade
 
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
@@ -53,6 +53,6 @@ gladedir = $(datadir)/prefixsuffix/glade/
 # Install the glade file:
 # The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/
 # Because that's how gladedir is defined.
-glade_DATA = src/prefixsuffix.glade
+glade_DATA = data/prefixsuffix.glade
 EXTRA_DIST = $(glade_DATA) 
 

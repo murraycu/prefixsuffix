@@ -23,7 +23,6 @@
 #include <config.h>
 #endif
 
-#include <bakery/bakery.h>
 #include <gtkmm.h>
 #include "mainwindow.h"
 

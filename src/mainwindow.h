@@ -53,7 +53,7 @@ protected:
   //Not from Glade file:
   //Gnome::UI::AppBar m_Status;
 
-  //GConf:
+  //GSettings:
   Bakery::Conf::Client m_ConfClient;
 
   //List of files to rename:

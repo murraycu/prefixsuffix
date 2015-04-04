@@ -26,13 +26,15 @@ AM_GNU_GETTEXT_VERSION([0.17])
 AC_SUBST([GETTEXT_PACKAGE], [prefixsuffix])
 AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE_TARNAME], [Define to the gettext package name.])
 
+GLIB_GSETTINGS
 
 dnl Create makefiles
 AC_OUTPUT(
 	Makefile
 	src/Makefile
 	po/Makefile.in
+	data/org.gnome.prefixsuffix.gschema.xml
 	help/Makefile
 	help/C/Makefile
-        docs/Makefile
+	docs/Makefile
 )

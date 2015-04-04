@@ -46,6 +46,12 @@ desktop_DATA 		= $(desktop_in_files:.desktop.in=.desktop)
 icondir = $(datadir)/pixmaps
 icon_DATA = prefixsuffix.png
 
+# GSettings schemas, enum files and conversion file
+#gsettings_ENUM_NAMESPACE = org.gnome.prefixsuffix
+#gsettings_ENUM_FILES = $(top_srcdir)/src/*.h $(top_srcdir)/src/backend/*.h
+gsettings_SCHEMAS = data/org.gnome.prefixsuffix.gschema.xml
+@GSETTINGS_RULES@
+
 EXTRA_DIST = $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
 

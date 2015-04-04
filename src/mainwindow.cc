@@ -30,7 +30,7 @@
 
 
 MainWindow::MainWindow()
-  : m_ConfClient("/apps/gnome/prefixsuffix"),
+  : m_ConfClient("org.gnome.prefixsuffix"),
     m_progress_max(0),
     m_progress_count(0)
 {
@@ -122,16 +122,18 @@ MainWindow::MainWindow()
 
 
   //GConf: associate configuration keys with widgets. We use load() and save() later:
-  m_ConfClient.add("prefix_replace",  *m_pEntryPrefixReplace);
-  m_ConfClient.add("prefix_with",  *m_pEntryPrefixWith);
-  m_ConfClient.add("suffix_replace",  *m_pEntrySuffixReplace);
-  m_ConfClient.add("suffix_with",  *m_pEntrySuffixWith);
+/*
+  m_ConfClient.add("prefix-replace",  *m_pEntryPrefixReplace);
+  m_ConfClient.add("prefix-with",  *m_pEntryPrefixWith);
+  m_ConfClient.add("suffix-replace",  *m_pEntrySuffixReplace);
+  m_ConfClient.add("suffix-with",  *m_pEntrySuffixWith);
   m_ConfClient.add("path",  *m_pEntryPath);
   m_ConfClient.add("prefix",  *m_pRadioPrefix);
   m_ConfClient.add("suffix",  *m_pRadioSuffix);
-  m_ConfClient.add("check_operate_on_hidden",  *m_pCheckHidden);
-  m_ConfClient.add("check_operate_on_folders",  *m_pCheckFolders);
-  m_ConfClient.add("check_recurse",  *m_pCheckRecurse);
+  m_ConfClient.add("check-operate-on_hidden",  *m_pCheckHidden);
+  m_ConfClient.add("check-operate-on_folders",  *m_pCheckFolders);
+  m_ConfClient.add("check-recurse",  *m_pCheckRecurse);
+*/
 
   m_ConfClient.load(); //Fill the widgets from the stored preferences.
 

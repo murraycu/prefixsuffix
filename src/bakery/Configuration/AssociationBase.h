@@ -19,8 +19,8 @@
 #ifndef BAKERY_CONFIGURATION_ASSOCIATIONBASE_H
 #define BAKERY_CONFIGURATION_ASSOCIATIONBASE_H
 
-#include <gconfmm.h>
 #include <gtkmm/widget.h>
+#include <giomm/settings.h>
 #include <bakery/Utilities/sharedptr.h>
 
 namespace Bakery
@@ -37,7 +37,7 @@ public:
   typedef sharedptr<AssociationBase> AssociationPtr;
   typedef sharedptr<const AssociationBase> AssociationConstPtr;
     
-  void add(const Glib::RefPtr<Gnome::Conf::Client>& conf_client);
+  void add(const Glib::RefPtr<Gio::Settings>& conf_client);
 
   void load();
   void save();
@@ -51,8 +51,8 @@ protected:
 
   bool is_instant() const;
   Glib::ustring get_key() const;
-  Glib::RefPtr<const Gnome::Conf::Client> get_conf_client() const;
-  Glib::RefPtr<Gnome::Conf::Client> get_conf_client();
+  Glib::RefPtr<const Gio::Settings> get_conf_client() const;
+  Glib::RefPtr<Gio::Settings> get_conf_client();
     
   typedef sigc::slot<void> Callback;
   virtual void connect_widget(Callback on_widget_changed) = 0;
@@ -61,11 +61,11 @@ protected:
   virtual void save_widget() = 0;
 
   void on_widget_changed();
-  void on_conf_changed(guint cnxn_id, Gnome::Conf::Entry entry);
+  void on_conf_changed();
 
   Glib::ustring m_key;
   bool m_instant;
-  Glib::RefPtr<Gnome::Conf::Client> m_conf_client;
+  Glib::RefPtr<Gio::Settings> m_conf_client;
 };
 
 } //namespace Conf

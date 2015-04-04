@@ -102,7 +102,7 @@ public:
 
   void load_widget()
   {
-    double val = get_conf_client()->get_float(get_key());
+    double val = get_conf_client()->get_double(get_key());
       if (m_widget.get_value() != val)
         m_widget.set_value(val);
   }
@@ -110,9 +110,9 @@ public:
   void save_widget()
   {
     double val = m_widget.get_value();
-    double existing_val = get_conf_client()->get_float(get_key());
+    double existing_val = get_conf_client()->get_double(get_key());
       if (existing_val != val)
-        get_conf_client()->set(get_key(), val);
+        get_conf_client()->set_double(get_key(), val);
   }
   
  
@@ -150,7 +150,7 @@ public:
     Glib::ustring existing_val = get_conf_client()->get_string(get_key());
     {
       if (existing_val != val)
-        get_conf_client()->set(get_key(), val);
+        get_conf_client()->set_string(get_key(), val);
     }
   }
   
@@ -176,7 +176,7 @@ public:
   void load_widget()
   {
     // Only set it if it has changed (avoids excess notifications).
-    bool val = get_conf_client()->get_bool(get_key());
+    bool val = get_conf_client()->get_boolean(get_key());
     if (m_widget.get_active() != val)
       m_widget.set_active(val);
   }
@@ -185,9 +185,9 @@ public:
   {
     // Only set it if it has changed (avoids excess notifications).
     bool val = m_widget.get_active();
-    bool existing_val = get_conf_client()->get_bool(get_key());
+    bool existing_val = get_conf_client()->get_boolean(get_key());
     if (existing_val != val)
-      get_conf_client()->set(get_key(), val);
+      get_conf_client()->set_boolean(get_key(), val);
   }
   
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
@@ -211,7 +211,7 @@ public:
 
   void load_widget()
   {
-    double val = get_conf_client()->get_float(get_key());
+    double val = get_conf_client()->get_double(get_key());
     if (m_widget.get_value() != val)
       m_widget.set_value(val);
   }
@@ -219,9 +219,9 @@ public:
   void save_widget()
   {
     double val = m_widget.get_value();
-    double existing_val = get_conf_client()->get_float(get_key());
+    double existing_val = get_conf_client()->get_double(get_key());
     if (existing_val != val)
-      get_conf_client()->set(get_key(), val);
+      get_conf_client()->set_double(get_key(), val);
   }
 
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)

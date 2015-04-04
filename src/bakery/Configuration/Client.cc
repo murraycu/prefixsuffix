@@ -20,9 +20,7 @@
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/range.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/combo.h>
-#include <gtkmm/optionmenu.h>
+
 
 namespace Bakery
 {
@@ -33,13 +31,11 @@ namespace Conf
 Client::Client(const Glib::ustring& configuration_directory)
 : m_directory(configuration_directory)
 {
-  m_refClient = Gnome::Conf::Client::get_default_client();
-  m_refClient->add_dir(m_directory);
+  m_refClient = Gio::Settings::create(m_directory);
 }
 
 Client::~Client()
 {
-  m_refClient->remove_dir(m_directory);
 }
 
 void Client::add(const Glib::ustring& key, Gtk::Widget& widget)

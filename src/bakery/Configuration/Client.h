@@ -84,7 +84,7 @@ protected:
   }
 
 private:
-  Glib::RefPtr<Gnome::Conf::Client> m_refClient;
+  Glib::RefPtr<Gio::Settings> m_refClient;
   Glib::ustring m_directory;
 
   typedef std::vector<AssociationPtr> type_vecWidgets;

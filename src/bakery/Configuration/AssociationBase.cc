@@ -34,7 +34,7 @@ AssociationBase::~AssociationBase()
 {
 }
 
-void AssociationBase::add(const Glib::RefPtr<Gnome::Conf::Client>& conf_client)
+void AssociationBase::add(const Glib::RefPtr<Gio::Settings>& conf_client)
 {
   // Connect signals so that widget changes are saved instantly,
   // and so that widgets are updated immediately if someone else changes
@@ -44,10 +44,8 @@ void AssociationBase::add(const Glib::RefPtr<Gnome::Conf::Client>& conf_client)
   if(is_instant())
   {
     connect_widget(sigc::mem_fun(*this, &AssociationBase::on_widget_changed));
-    
-    // TODO: This notify_add seems to cause segmentation faults when the callback is
-    // later invoked. This could be a thread synchronization issue.
-    conf_client->notify_add(get_key(),sigc::mem_fun(*this, &AssociationBase::on_conf_changed));
+
+    conf_client->connect_changed(get_key(), sigc::mem_fun(*this, &AssociationBase::on_conf_changed));
   }
 }
 
@@ -69,7 +67,7 @@ void AssociationBase::on_widget_changed()
   save();
 }
 
-void AssociationBase::on_conf_changed(guint cnxn_id, Gnome::Conf::Entry entry)
+void AssociationBase::on_conf_changed()
 {
   // TODO: Should this be protected by a mutex to avoid overlapping callbacks?
   load();
@@ -90,12 +88,12 @@ Glib::ustring AssociationBase::get_key() const
 // objects should be const:
 // http://www.awprofessional.com/content/images/0201924889/items/item21.html
 
-Glib::RefPtr<const Gnome::Conf::Client> AssociationBase::get_conf_client() const
+Glib::RefPtr<const Gio::Settings> AssociationBase::get_conf_client() const
 {
   return m_conf_client;
 }
 
-Glib::RefPtr<Gnome::Conf::Client> AssociationBase::get_conf_client()
+Glib::RefPtr<Gio::Settings> AssociationBase::get_conf_client()
 {
   return m_conf_client;
 }

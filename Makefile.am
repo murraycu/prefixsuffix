@@ -13,14 +13,23 @@ bin_PROGRAMS = prefixsuffix
 #List of source files needed to build the executable:
 prefixsuffix_SOURCES = \
 	src/main.cc \
-	mainwindow.h \
-	mainwindow.cc
+	src/mainwindow.h \
+	src/mainwindow.cc \
+	src/bakery/Configuration/Association.h \
+	src/bakery/Configuration/Association.cc \
+	src/bakery/Configuration/AssociationBase.h \
+	src/bakery/Configuration/AssociationBase.cc \
+	src/bakery/Configuration/Client.h \
+	src/bakery/Configuration/Client.cc \
+	src/bakery/Utilities/sharedptr.h
 	
 EXTRA_DIST = \
 	src/prefixsuffix-logo.png \
 	src/prefixsuffix.glade
 
-prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) -I$(top_builddir) -I$(top_srcdir)
+prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
+	-I$(top_builddir)/src -I$(top_srcdir)/src \
+	-I$(top_builddir) -I$(top_srcdir)
 prefixsuffix_LDADD = $(DEPS_LIBS)
 
 

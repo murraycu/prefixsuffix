@@ -4,4 +4,5 @@ src/mainwindow.cc
 prefixsuffix.desktop.in
 
 data/prefixsuffix.glade
+data/org.gnome.prefixsuffix.gschema.xml.in
 

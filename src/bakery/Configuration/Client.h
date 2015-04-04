@@ -53,13 +53,8 @@ public:
   Client(const Glib::ustring& configuration_directory);
   virtual ~Client();
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   virtual void load();
   virtual void save();
-#else
-  virtual void load(std::auto_ptr<Glib::Error>& error);
-  virtual void save(std::auto_ptr<Glib::Error>& error);
-#endif
 
   /// e.g. conf_client.add("user_name", m_EntryUserName);
   virtual void add(const Glib::ustring& key, Gtk::Widget& widget);

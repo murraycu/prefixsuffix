@@ -73,13 +73,8 @@ public:
    * behaviors based on the widget type.
    */
   virtual void connect_widget(Callback on_widget_changed);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   virtual void load_widget();
   virtual void save_widget();
-#else
-  virtual void load_widget(std::auto_ptr<Glib::Error>& error);
-  virtual void save_widget(std::auto_ptr<Glib::Error>& error);
-#endif
   
 protected:
   Association(const Glib::ustring& full_key, T_Widget& widget, bool instant)
@@ -105,41 +100,19 @@ public:
     m_widget.signal_value_changed().connect(widget_changed);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void load_widget()
-#else
-  void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif // GLIBMM_EXCEPTIONS_ENABLED
   {
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     double val = get_conf_client()->get_float(get_key());
-#else
-    double val = get_conf_client()->get_float(get_key(), error);
-    if (error.get() != NULL)
-#endif
       if (m_widget.get_value() != val)
         m_widget.set_value(val);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_widget()
-#else
-  void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     double val = m_widget.get_value();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     double existing_val = get_conf_client()->get_float(get_key());
-#else
-    double existing_val = get_conf_client()->get_float(get_key(), error);
-    if (error.get() != NULL)
-#endif
       if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
         get_conf_client()->set(get_key(), val);
-#else
-        get_conf_client()->set(get_key(), val, error);
-#endif
   }
   
  
@@ -162,44 +135,22 @@ public:
     m_widget.signal_changed().connect(widget_changed);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void load_widget()
-#else
-  void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     // Only set it if it has changed (avoids excess notifications).
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::ustring val = get_conf_client()->get_string(get_key());
-#else
-    Glib::ustring val = get_conf_client()->get_string(get_key(), error);
-    if (error.get() != NULL)
-#endif
-      if (m_widget.get_text() != val)
-        m_widget.set_text(val);
+    if (m_widget.get_text() != val)
+      m_widget.set_text(val);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_widget()
-#else
-  void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     // Only set it if it has changed (avoids excess notifications).
     Glib::ustring val = m_widget.get_text();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::ustring existing_val = get_conf_client()->get_string(get_key());
-#else
-    Glib::ustring existing_val = get_conf_client()->get_string(get_key(), error);
-    if (error.get() != NULL)
-#endif
     {
       if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
         get_conf_client()->set(get_key(), val);
-#else
-        get_conf_client()->set(get_key(), val, error);
-#endif
     }
   }
   
@@ -222,43 +173,21 @@ public:
     m_widget.signal_toggled().connect(widget_changed);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void load_widget()
-#else
-  void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     // Only set it if it has changed (avoids excess notifications).
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     bool val = get_conf_client()->get_bool(get_key());
-#else
-    bool val = get_conf_client()->get_bool(get_key(), error);
-    if (error.get() != NULL)
-#endif
-      if (m_widget.get_active() != val)
-        m_widget.set_active(val);
+    if (m_widget.get_active() != val)
+      m_widget.set_active(val);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_widget()
-#else
-  void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     // Only set it if it has changed (avoids excess notifications).
     bool val = m_widget.get_active();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     bool existing_val = get_conf_client()->get_bool(get_key());
-#else
-    bool existing_val = get_conf_client()->get_bool(get_key(), error);
-    if (error.get() != NULL)
-#endif
-      if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+    if (existing_val != val)
       get_conf_client()->set(get_key(), val);
-#else
-      get_conf_client()->set(get_key(), val, error);
-#endif
   }
   
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
@@ -280,43 +209,20 @@ public:
     m_widget.signal_value_changed().connect(widget_changed);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void load_widget()
-#else
-  void load_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     double val = get_conf_client()->get_float(get_key());
-#else
-    double val = get_conf_client()->get_float(get_key(), error);
-    if (error.get() != NULL)
-#endif
-      if (m_widget.get_value() != val)
-        m_widget.set_value(val);
+    if (m_widget.get_value() != val)
+      m_widget.set_value(val);
   }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_widget()
-#else
-  void save_widget(std::auto_ptr<Glib::Error>& error)
-#endif
   {
     double val = m_widget.get_value();
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     double existing_val = get_conf_client()->get_float(get_key());
-#else
-    double existing_val = get_conf_client()->get_float(get_key(), error);
-    if (error.get() != NULL)
-#endif
-      if (existing_val != val)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-        get_conf_client()->set(get_key(), val);
-#else
-        get_conf_client()->set(get_key(), val, error);
-#endif
+    if (existing_val != val)
+      get_conf_client()->set(get_key(), val);
   }
-  
 
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
   : AssociationCreation<type_widget>(full_key, widget, instant)

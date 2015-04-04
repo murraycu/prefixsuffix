@@ -51,54 +51,28 @@ void AssociationBase::add(const Glib::RefPtr<Gnome::Conf::Client>& conf_client)
   }
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void AssociationBase::load()
-#else
-void AssociationBase::load(std::auto_ptr<Glib::Error>& error)
-#endif
 {
   if(get_conf_client())
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     load_widget();
-#else
-    load_widget(error);
-#endif
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void AssociationBase::save()
-#else
-void AssociationBase::save(std::auto_ptr<Glib::Error>& error)
-#endif
 {
   if(get_conf_client())
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     save_widget();
-#else
-    save_widget(error);
-#endif
 }
 
 void AssociationBase::on_widget_changed()
 {
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   // TODO: Should this be protected by a mutex to avoid overlapping callbacks?
   save();
-#else
-  std::auto_ptr<Glib::Error> error;
-  save(error);
-#endif
 }
 
 void AssociationBase::on_conf_changed(guint cnxn_id, Gnome::Conf::Entry entry)
 {
   // TODO: Should this be protected by a mutex to avoid overlapping callbacks?
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   load();
-#else
-  std::auto_ptr<Glib::Error> error;
-  load(error);
-#endif
 }
 
 bool AssociationBase::is_instant() const

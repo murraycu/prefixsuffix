@@ -39,14 +39,8 @@ public:
     
   void add(const Glib::RefPtr<Gnome::Conf::Client>& conf_client);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void load();
   void save();
-#else
-  // TODO: Ignore errors in these functions?
-  void load(std::auto_ptr<Glib::Error>& error);
-  void save(std::auto_ptr<Glib::Error>& error);
-#endif
 
   virtual ~AssociationBase();
     
@@ -63,13 +57,8 @@ protected:
   typedef sigc::slot<void> Callback;
   virtual void connect_widget(Callback on_widget_changed) = 0;
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   virtual void load_widget() = 0;
   virtual void save_widget() = 0;
-#else
-  virtual void load_widget(std::auto_ptr<Glib::Error>& error) = 0;
-  virtual void save_widget(std::auto_ptr<Glib::Error>& error) = 0;
-#endif
 
   void on_widget_changed();
   void on_conf_changed(guint cnxn_id, Gnome::Conf::Entry entry);

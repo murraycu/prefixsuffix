@@ -26,6 +26,7 @@
 #include <gtkmm/messagedialog.h>
 #include <bakery/Utilities/BusyCursor.h>
 #include <iostream>
+#include <glibmm/i18n.h>
 
 
 MainWindow::MainWindow()
@@ -160,7 +161,7 @@ void MainWindow::on_radio_suffix_clicked()
 
 void MainWindow::on_button_choose()
 {
-  Gtk::FileChooserDialog dialog(*this, gettext("Choose directory"), Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+  Gtk::FileChooserDialog dialog(*this, _("Choose directory"), Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
   dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
   dialog.add_button("Select", Gtk::RESPONSE_OK);
   
@@ -213,7 +214,7 @@ void MainWindow::on_button_process()
     //We have enough to start processing:
     Bakery::BusyCursor busyCursor(*this);
 
-    //m_Status.push(gettext("Generating list of files."));
+    //m_Status.push(_("Generating list of files."));
     //m_Status.refresh();
     bool test = build_list_of_files();
     if(test)
@@ -222,7 +223,7 @@ void MainWindow::on_button_process()
 
       //bool bOperateOnHidden = m_pCheckHidden->get_active();
 
-      //m_Status.push(gettext("Renaming files."));
+      //m_Status.push(_("Renaming files."));
       //m_Status.refresh();
 
       //Build the list of new filenames:

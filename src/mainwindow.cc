@@ -165,6 +165,7 @@ void MainWindow::on_button_process()
   {
     Gtk::MessageDialog dialog(*this, "Please choose a directory.");
     dialog.run();
+    return;
   }
   /*
   else if ( !(Glib::file_test( m_pEntryPath->get_text(), Glib::FILE_TEST_IS_DIR)) )
@@ -172,87 +173,76 @@ void MainWindow::on_button_process()
 
   }
   */
-  else if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text().size() == 0) &&  (m_pEntryPrefixWith->get_text().size() == 0) )
+  if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text().size() == 0) &&  (m_pEntryPrefixWith->get_text().size() == 0) )
   {
     Gtk::MessageDialog dialog(*this, "Please enter values in the prefix fields.");
     dialog.run();
+    return;
   }
-  else if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text() == m_pEntryPrefixWith->get_text()) )
+
+  if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text() == m_pEntryPrefixWith->get_text()) )
   {
     Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
     dialog.run();
+    return;
   }
-  else if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text().size() == 0) &&  (m_pEntrySuffixWith->get_text().size() == 0) )
+
+  if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text().size() == 0) &&  (m_pEntrySuffixWith->get_text().size() == 0) )
   {
     Gtk::MessageDialog dialog(*this, "Please enter values in the suffix fields.");
+    dialog.run();
+    return;
   }
-  else if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text() == m_pEntrySuffixWith->get_text()) )
+
+  if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text() == m_pEntrySuffixWith->get_text()) )
   {
     Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
     dialog.run();
+    return;
   }
-  else
+
+  //We have enough to start processing:
+  //Bakery::BusyCursor busyCursor(*this);
+
+  //m_Status.push(_("Generating list of files."));
+  //m_Status.refresh();
+  if(!build_list_of_files())
+    return;
+
+  if(m_listFiles.empty())
   {
-    //We have enough to start processing:
-    Bakery::BusyCursor busyCursor(*this);
-
-    //m_Status.push(_("Generating list of files."));
-    //m_Status.refresh();
-    bool test = build_list_of_files();
-    if(test)
-    {
-      //m_Status.pop();
-
-      //bool bOperateOnHidden = m_pCheckHidden->get_active();
-
-      //m_Status.push(_("Renaming files."));
-      //m_Status.refresh();
-
-      //Build the list of new filenames:
-      type_listStrings listFiles_old_names, listFiles_new_names;
-      for(type_listStrings::iterator iter = m_listFiles.begin(); iter != m_listFiles.end(); ++iter)
-      {
-        const Glib::ustring& filepath = *iter;
-        const Glib::ustring& filepath_new = get_new_filepath(filepath);
-        if(filepath != filepath_new) //Ignore it if the prefix/suffix change had no effect
-        {
-          listFiles_old_names.push_back( filepath );
-          listFiles_new_names.push_back( filepath_new );
-          //std::cout << "adding: old=" << filepath << ", new=" << filepath_new << std::endl;
-        }
-      }
-
-      //Rename the files
-      if(listFiles_old_names.empty())
-      {
-        Gtk::MessageDialog dialog(*this, "No files have this prefix or suffix, so no files will be renamed.");
-        dialog.run();
-      }
-      else
-      {
-        try
-        {
-          Gnome::Vfs::Transfer::transfer_list(listFiles_old_names, listFiles_new_names,
-                                         Gnome::Vfs::XFER_REMOVESOURCE, //move instead of copying
-                                         Gnome::Vfs::XFER_ERROR_MODE_QUERY,
-                                         Gnome::Vfs::XFER_OVERWRITE_MODE_QUERY,
-                                         sigc::mem_fun(*this, &MainWindow::on_transfer_progress) );
-
-          Gtk::MessageDialog dialog(*this, "Renaming has finished successfully.");
-          dialog.run();
-        }
-        catch(const Gnome::Vfs::exception& ex)
-        {
-          Glib::ustring message = "PrefixSuffix failed while renaming the files. Error:/n" + ex.what();
-          Gtk::MessageDialog dialog(*this, message);
-          dialog.run();
-        }
-      }
-
-      //m_Status.pop();
-      //m_Status.refresh();
-    }
+    Gtk::MessageDialog dialog(*this, "No files have this prefix or suffix, so no files will be renamed.");
+    dialog.run();
+    return;
   }
+
+  //Rename the files:
+  type_listStrings::const_iterator iterNew = m_listFilesNew.begin();
+  for(type_listStrings::const_iterator iter = m_listFiles.begin(); iter != m_listFiles.end(); ++iter)
+  {
+    const Glib::ustring uri = *iter;
+    const Glib::ustring uriNew = *iterNew;
+    const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
+
+    std::cout << G_STRFUNC << ": debug: uri: " << uri << std::endl;
+    std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
+    try
+    {
+      file->set_display_name(uriNew);
+    }
+    catch(const Glib::Error& ex)
+    {
+      std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name(): " << ex.what() << std::endl;
+      Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while renaming the files.");
+      dialog.run();
+      return;
+    }
+
+    ++iterNew;
+  }
+
+  //Rename the folders:
+  //TODO
 }
 
 void MainWindow::on_button_close()
@@ -264,103 +254,118 @@ bool MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
   m_listFiles.clear();
+  m_listFilesNew.clear();
   m_listFolders.clear();
-  Glib::ustring uri = m_pEntryPath->get_uri();
+  m_listFoldersNew.clear();
+  const Glib::ustring uri = m_pEntryPath->get_uri();
 
   //recurse:
   return build_list_of_files(uri);  
 }
   
-bool MainWindow::build_list_of_files(Glib::ustring& directorypath_uri)
+bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
 {
   //This is a recursion.
 
+  Glib::ustring directorypath_uri = directorypath_uri_in;
   canonical_folder_path(directorypath_uri);
 
   bool bUseHidden = m_pCheckHidden->get_active();
+  const bool operate_on_folders = m_pCheckFolders->get_active();
+  const bool recurse_into_folders = m_pCheckRecurse->get_active();
 
   //Get the filenames in the directory:
-  type_listStrings listFilenames;
+  type_listStrings listFolders;
   try
   {
-    Gnome::Vfs::DirectoryHandle handle;
-    handle.open(directorypath_uri, Gnome::Vfs::FILE_INFO_DEFAULT |
-                                   Gnome::Vfs::FILE_INFO_GET_MIME_TYPE |
-                                   Gnome::Vfs::FILE_INFO_FORCE_SLOW_MIME_TYPE);
-
-    bool file_exists = true;
-    while(file_exists) //read_next() returns false when there are no more files to read.
+    Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
+    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children();
+    Glib::RefPtr<Gio::FileInfo> info = enumerator->next_file();
+    while(info)
     {
-      Glib::RefPtr<Gnome::Vfs::FileInfo> refFileInfo = handle.read_next(file_exists);
-      Glib::ustring filename = refFileInfo->get_name();
+      const Glib::RefPtr<const Gio::File> child = directory->get_child(info->get_name());
 
-      //Ignore any non-file filenames:
-      if( (filename != "..") && (filename != ".") && !filename.empty() )
-        listFilenames.push_back(refFileInfo->get_name());
-    }
-  }
-  catch(const Gnome::Vfs::exception& ex)
-  {
-    Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while obtaining the list of files.");
-    dialog.run();
-    return false; //Stop trying.
-  }
-
-  try
-  {
-    // Examine the filenames:
-    for(type_listStrings::iterator iter = listFilenames.begin(); iter != listFilenames.end(); ++iter)
-    {
-      const Glib::ustring filename = *iter;
-
-      //Check whether we should use hidden files:
       bool bUse = true;
-      if(!bUseHidden && file_is_hidden(filename))
+
+      const std::string basename = child->get_basename();
+      //Ignore any non-file filenames:
+      if( (basename == "..") || (basename == ".") || basename.empty() )
+      {
         bUse = false;
+      }
+      else
+      {
+        //Check whether we should use hidden files:
+        if(!bUseHidden && file_is_hidden(basename))
+          bUse = false;
+      }
 
       if(bUse)
       {
-        //Concatenate the URIs:
-        Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create(directorypath_uri);
-        Glib::RefPtr<Gnome::Vfs::Uri> uri_appended = uri->append_file_name(filename);
-        Glib::ustring filepath = uri_appended->to_string();
-        
-        //TODO Test whether it is a folder or a file:
-        if(false) //if(Glib::file_test(filepath, Glib::FILE_TEST_IS_DIR))
+        Glib::ustring uri = child->get_uri();
+
+        const Gio::FileType file_type = child->query_file_type();
+        if(file_type == Gio::FILE_TYPE_DIRECTORY)
         {
           //It's a folder:
-          canonical_folder_path(filepath);
+          canonical_folder_path(uri);
 
-          //Add to list of folders:
-          m_listFolders.push_back(filepath); //Might not be used - we check later.
-
-          //Recurse to get files in this folder.
-          build_list_of_files(filepath);
-        }
-        else
-        {
-          //It's a file:
-          m_listFiles.push_back(filepath);
+          //Add to list of folders, so we can recurse into them,
+          //and maybe rename them:
+          listFolders.push_back(uri);
+        } else {
+          const Glib::ustring& basename_new = get_new_basename(basename);
+          if(basename_new != basename) //Ignore it if the prefix/suffix change had no effect
+          {
+            m_listFiles.push_back(uri);
+            m_listFilesNew.push_back(basename_new);
+          }
         }
       }
+
+      info = enumerator->next_file();
     }
   }
-  catch(const Glib::Exception& ex)
+  catch(const Glib::Error& ex)
   {
-    Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while building the list of files.");
+    Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while obtaining the list of files.");
     dialog.run();
+
+    std::cerr << G_STRFUNC << ": Exception with directorypath_uri=" << directorypath_uri << ": " << ex.what() << std::endl;
+
     return false; //Stop trying.
+  }
+
+  // Examine the sub-directories:
+  for(type_listStrings::const_iterator iter = listFolders.begin(); iter != listFolders.end(); ++iter)
+  {
+    //Recurse to get files in this folder.
+    const Glib::ustring child_dir = *iter;
+
+    if(recurse_into_folders)
+    {
+      if(!build_list_of_files(child_dir))
+        return false;
+    }
+
+    if(operate_on_folders)
+    {
+      const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(child_dir);
+      const std::string basename = file->get_basename();
+      const Glib::ustring& filepath_new = get_new_basename(basename);
+      if(child_dir != filepath_new) //Ignore it if the prefix/suffix change had no effect
+      {
+        m_listFolders.push_back(child_dir);
+        m_listFoldersNew.push_back(basename);
+      }
+    }
   }
 
   return true; //Success.
 }
 
-Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
+Glib::ustring MainWindow::get_new_basename(const Glib::ustring& basename)
 {
-  //Separate the file path:
-  Glib::ustring directory, filename_old;
-  get_folder_and_file(filepath, directory, filename_old);
-
   Glib::ustring filename_new;
 
   //Prefix:
@@ -372,11 +377,11 @@ Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
     if(strPrefixReplace.size()) //If an old prefix was specified
     {
       //If the old prefix is there:
-      Glib::ustring::size_type posPrefix = filename_old.find(strPrefixReplace);
+      Glib::ustring::size_type posPrefix = basename.find(strPrefixReplace);
       if(posPrefix != Glib::ustring::npos)
       {
         //Remove old prefix:
-        filename_new = filename_old.substr(strPrefixReplace.size());
+        filename_new = basename.substr(strPrefixReplace.size());
 
         //Add new prefix:
         filename_new = strPrefixWith + filename_new;
@@ -384,13 +389,13 @@ Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
       else
       {
         //No change:
-        filename_new = filename_old;
+        filename_new = basename;
       }
     }
    else
     {
       //There's no old prefix to find, so just add the new prefix:
-      filename_new = strPrefixWith + filename_old;
+      filename_new = strPrefixWith + basename;
     }
   }
 
@@ -404,11 +409,11 @@ Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
     //If the old suffix is there:
     if(strSuffixReplace.size()) //if an old suffix was specified
     {
-      Glib::ustring::size_type posSuffix = filename_old.rfind(strSuffixReplace);
-      if(posSuffix != Glib::ustring::npos && ((filename_old.size() - posSuffix) == strSuffixReplace.size())) //if it was found, and if these were the last characters in the string.
+      Glib::ustring::size_type posSuffix = basename.rfind(strSuffixReplace);
+      if(posSuffix != Glib::ustring::npos && ((basename.size() - posSuffix) == strSuffixReplace.size())) //if it was found, and if these were the last characters in the string.
       {
         //Remove old suffix:
-        filename_new = filename_old.substr(0, posSuffix);
+        filename_new = basename.substr(0, posSuffix);
 
         //Add new suffix:
         filename_new += strSuffixWith;
@@ -416,7 +421,7 @@ Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
      else
       {
         //No change:
-        filename_new = filename_old;
+        filename_new = basename;
       }
     }
     else
@@ -426,8 +431,7 @@ Glib::ustring MainWindow::get_new_filepath(const Glib::ustring& filepath)
     }
   }
 
-  //Rejoin the directory and filename parts:
-  return directory + filename_new;
+  return filename_new;
 }
 
 bool MainWindow::file_is_hidden(const Glib::ustring& filename) //static
@@ -478,109 +482,6 @@ void MainWindow::on_hide()
   m_ConfClient.save();
 }
 
-bool MainWindow::on_transfer_progress(const Gnome::Vfs::Transfer::ProgressInfo& info)
-{
-  bool returnState = true;
-
-  if(info)
-  {
-    switch (info.get_status())
-    {
-      case Gnome::Vfs::XFER_PROGRESS_STATUS_VFSERROR:
-        std::cout << "VFS Error: " << gnome_vfs_result_to_string(static_cast<GnomeVFSResult>(info.get_vfs_status())) << std::endl;
-        exit(1);
-
-      case Gnome::Vfs::XFER_PROGRESS_STATUS_OVERWRITE:
-        //std::cout << "Overwriting " << info.get_target_name() << " with " << info.get_source_name() << std::endl;
-        exit(1);
-
-      case Gnome::Vfs::XFER_PROGRESS_STATUS_OK:
-      {
-        //std::cout << "Status: OK" << std::endl;
-
-        switch (info.get_phase())
-        {
-          case Gnome::Vfs::XFER_PHASE_INITIAL:
-          {
-            //Set the Progress Bar to 0%.
-            m_progress_count = 0;
-            m_pProgressBar->set_fraction(0);            
-            
-            //std::cout << "  Initial phase." << std::endl;
-            break;
-          }
-          case Gnome::Vfs::XFER_CHECKING_DESTINATION:
-            //std::cout << "  Checking destination." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_COLLECTING:
-            //std::cout << "  Collecting file list." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_READYTOGO:
-            //std::cout << "  Ready to go!" << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_OPENSOURCE:
-            //std::cout << "  Opening source." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_OPENTARGET:
-            //std::cout << "  Opening target." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_COPYING:
-          /*
-            std::cout << "  Copying '" << info.get_source_name() << "' to '" << info.get_target_name() <<
-              "' (file " << info.get_file_index() << "/" << info.get_total_files() << ", byte " <<
-              info.get_bytes_copied() << "/" << info.get_file_size() << " in file, " <<
-              info.get_total_bytes_copied() << "/" << info.get_total_bytes() << std::endl;
-          */
-            break;
-          case Gnome::Vfs::XFER_PHASE_MOVING:
-          {
-            //Set the progress bar to a suitable % to show how many files have been moved:
-            m_progress_count++; //1 file has been moved.
-            double fraction = m_progress_count / m_listFiles.size();
-            m_pProgressBar->set_fraction(fraction);
-            
-            /*
-            std::cout << "  Moving '" << info.get_source_name() << "' to '" << info.get_target_name() <<
-              "' (file " << info.get_file_index() << "/" << info.get_total_files() << ", byte " <<
-              info.get_bytes_copied() << "/" << info.get_file_size() << " in file, " <<
-              info.get_total_bytes_copied() << "/" << info.get_total_bytes() << std::endl;
-            */
-            break;
-          }
-          case Gnome::Vfs::XFER_PHASE_READSOURCE:
-            //std::cout << "  Reading source." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_CLOSESOURCE:
-            //std::cout << "  Closing source." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_CLOSETARGET:
-            //std::cout << "  Closing target." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_DELETESOURCE:
-            //std::cout << "  Deleting source." << std::endl;
-            break;
-          case Gnome::Vfs::XFER_PHASE_FILECOMPLETED:
-            /*
-            std::cout << "  Done with '" << info.get_source_name() << "' -> '" << info.get_target_name() <<
-              "', going next." << std::endl;
-            */
-            break;
-          case Gnome::Vfs::XFER_PHASE_COMPLETED:
-          {
-            //std::cout << "  Completed." << std::endl;
-            break;
-          }
-          default:
-            std::cout << "prefixsuffix:  Unexpected phase " << info.get_phase() << std::endl;
-        }
-      }
-      case Gnome::Vfs::XFER_PROGRESS_STATUS_DUPLICATE:
-        break;
-    }
-  }
-
-  return returnState;
-}
 
 
 

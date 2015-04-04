@@ -2,7 +2,6 @@
 #include <gtkmm.h>
 #include <libglademm.h>
 #include <bakery/Configuration/Client.h>
-#include <libgnomevfsmm.h>
 #include <list>
 
 class MainWindow : public Gtk::Window
@@ -14,8 +13,8 @@ public:
 protected:
 
   virtual bool build_list_of_files();
-  virtual bool build_list_of_files(Glib::ustring& directorypath_uri); //Called recursively.
-  virtual Glib::ustring get_new_filepath(const Glib::ustring& filepath);
+  virtual bool build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
+  virtual Glib::ustring get_new_basename(const Glib::ustring& filepath);
   static bool file_is_hidden(const Glib::ustring& filepath);
   static void canonical_folder_path(Glib::ustring& folderpath);
   static void get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename);
@@ -28,8 +27,6 @@ protected:
   virtual void on_button_close();
 
   virtual void on_hide(); //override.
-
-  virtual bool on_transfer_progress(const Gnome::Vfs::Transfer::ProgressInfo& info);
 
   Glib::RefPtr<Gtk::Builder> m_refGlade;
 
@@ -61,7 +58,7 @@ protected:
 
   //List of files to rename:
   typedef std::list<Glib::ustring> type_listStrings;
-  type_listStrings m_listFiles, m_listFolders;
+  type_listStrings m_listFiles, m_listFilesNew, m_listFolders, m_listFoldersNew;
 
   type_listStrings::size_type m_progress_max, m_progress_count;
 };

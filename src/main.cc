@@ -31,9 +31,8 @@ int
 main(int argc, char* argv[])
 {
   Gtk::Main main(argc, argv);
-  Gnome::Vfs::init();
   Bakery::init();
-  
+
   MainWindow app;
 
   main.run(app);

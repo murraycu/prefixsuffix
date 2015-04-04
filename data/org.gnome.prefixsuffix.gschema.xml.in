@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+	<schema id="org.gnome.prefixsuffix" path="/org/gnome/prefixsuffix/" gettext-domain="@GETTEXT_PACKAGE@">
+		<key name="prefix-replace" type="s">
+			<default>''</default>
+			<summary>Rename files that have this prefix.</summary>
+		</key>
+		<key name="prefix-with" type="s">
+			<default>''</default>
+			<summary>The prefix to use when renaming, instead of the original prefix.</summary>
+		</key>
+		<key name="suffix-replace" type="s">
+			<default>''</default>
+			<summary>Rename files that have this suffix.</summary>
+		</key>
+		<key name="suffix-with" type="s">
+			<default>''</default>
+			<summary>The suffix to use when renaming, instead of the original suffix.</summary>
+		</key>
+		<key name="prefix" type="s">
+			<default>''</default>
+			<summary>Whether to find files to rename based on the prefix.</summary>
+		</key>
+		<key name="suffix" type="s">
+			<default>''</default>
+			<summary>Whether to find files to rename based on the suffix.</summary>
+		</key>
+		<key name="check-operate-on-hidden" type="b">
+			<default>false</default>
+			<summary>Whether to rename hidden files.</summary>
+		</key>
+		<key name="check-operate-on-folders" type="b">
+			<default>false</default>
+			<summary>Whether to rename directory names.</summary>
+		</key>
+		<key name="check-recurse" type="b">
+			<default>false</default>
+			<summary>Whether to rename files inside child directories.</summary>
+		</key>
+	</schema>
+</schemalist>

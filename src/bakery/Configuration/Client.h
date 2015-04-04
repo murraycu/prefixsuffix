@@ -77,8 +77,7 @@ protected:
   template< class T_Widget >
   void add_association(const Glib::ustring& key, T_Widget& widget, bool instant)
   {
-    Glib::ustring full_key = m_directory + "/" + key;
-    AssociationPtr assoc = Association<T_Widget>::create(full_key, widget, instant);
+    AssociationPtr assoc = Association<T_Widget>::create(key, widget, instant);
     m_vecWidgets.push_back(assoc);
     assoc->add(m_refClient);
   }

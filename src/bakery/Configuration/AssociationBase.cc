@@ -45,7 +45,9 @@ void AssociationBase::add(const Glib::RefPtr<Gio::Settings>& conf_client)
   {
     connect_widget(sigc::mem_fun(*this, &AssociationBase::on_widget_changed));
 
-    conf_client->connect_changed(get_key(), sigc::mem_fun(*this, &AssociationBase::on_conf_changed));
+    //TODO: Use this when we can use glibmm 2.46,
+    //so we can respond to changes from outside of our UI.
+    //conf_client->connect_changed(get_key(), sigc::mem_fun(*this, &AssociationBase::on_conf_changed));
   }
 }
 

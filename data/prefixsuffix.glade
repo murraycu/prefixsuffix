@@ -319,7 +319,6 @@
                     <property name="label" translatable="yes">_Path</property>
                     <property name="use_underline">True</property>
                     <property name="justify">right</property>
-                    <property name="mnemonic_widget">entry_path</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -328,31 +327,15 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry_path">
+                  <object class="GtkFileChooserButton" id="entry_path">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">This can be any URI, such as something beginning with file:// or http:// or ftp://. If there is no URI prefix, then it will default to file://.</property>
-                    <property name="invisible_char">●</property>
+                    <property name="can_focus">False</property>
+                    <property name="action">select-folder</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button_choose">
-                    <property name="label" translatable="yes">Choose</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="can_default">True</property>
-                    <property name="receives_default">False</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>

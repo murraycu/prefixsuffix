@@ -106,8 +106,6 @@ MainWindow::MainWindow()
     m_refGlade->get_widget("table_suffix", m_pContainerSuffix);
 
     //Buttons:
-    m_refGlade->get_widget("button_choose", m_pButtonChoose);
-    m_pButtonChoose->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_choose) );
     m_refGlade->get_widget("button_process", m_pButtonProcess);
     m_pButtonProcess->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
     m_refGlade->get_widget("button_close", m_pButtonClose);
@@ -159,27 +157,11 @@ void MainWindow::on_radio_suffix_clicked()
   m_pContainerSuffix->set_sensitive(enable);
 }
 
-void MainWindow::on_button_choose()
-{
-  Gtk::FileChooserDialog dialog(*this, _("Choose directory"), Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-  dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-  dialog.add_button("Select", Gtk::RESPONSE_OK);
-  
-  int response_id = dialog.run();
-  //dialog.hide();
-  if(response_id != Gtk::RESPONSE_CANCEL)
-  {
-    Glib::ustring strFolderPath = dialog.get_filename();
-    canonical_folder_path(strFolderPath);
-    //TODO: Check that it's a folder.
-    m_pEntryPath->set_text(strFolderPath); //TODO Convert to UTF8?
-  }
-}
-
 void MainWindow::on_button_process()
 {
   //Check that there is enough information:
-  if(m_pEntryPath->get_text().size() == 0)
+  const Glib::ustring uri = m_pEntryPath->get_uri();
+  if(uri.empty())
   {
     Gtk::MessageDialog dialog(*this, "Please choose a directory.");
     dialog.run();
@@ -278,20 +260,15 @@ void MainWindow::on_button_close()
   hide();
 }
 
-Glib::ustring MainWindow::get_path()
-{
-  return m_pEntryPath->get_text();
-}
-
 bool MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
   m_listFiles.clear();
   m_listFolders.clear();
-  Glib::ustring directorypath_string = m_pEntryPath->get_text();
+  Glib::ustring uri = m_pEntryPath->get_uri();
 
   //recurse:
-  return build_list_of_files(directorypath_string);  
+  return build_list_of_files(uri);  
 }
   
 bool MainWindow::build_list_of_files(Glib::ustring& directorypath_uri)

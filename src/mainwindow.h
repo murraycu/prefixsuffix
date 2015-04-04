@@ -13,7 +13,6 @@ public:
 
 protected:
 
-  virtual Glib::ustring get_path();
   virtual bool build_list_of_files();
   virtual bool build_list_of_files(Glib::ustring& directorypath_uri); //Called recursively.
   virtual Glib::ustring get_new_filepath(const Glib::ustring& filepath);
@@ -25,7 +24,6 @@ protected:
   virtual void on_radio_prefix_clicked();
   virtual void on_radio_suffix_clicked();
 
-  virtual void on_button_choose();
   virtual void on_button_process();
   virtual void on_button_close();
 
@@ -45,10 +43,9 @@ protected:
   Gtk::Entry* m_pEntryPrefixWith;
   Gtk::Entry* m_pEntrySuffixReplace;
   Gtk::Entry* m_pEntrySuffixWith;
-  Gtk::Entry* m_pEntryPath;
+  Gtk::FileChooserButton* m_pEntryPath;
   Gtk::Widget* m_pContainerPrefix;
   Gtk::Widget* m_pContainerSuffix;
-  Gtk::Button* m_pButtonChoose;
   Gtk::Button* m_pButtonProcess;
   Gtk::Button* m_pButtonClose;
   Gtk::CheckButton* m_pCheckHidden;

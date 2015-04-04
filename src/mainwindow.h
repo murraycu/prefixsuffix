@@ -1,6 +1,5 @@
 
 #include <gtkmm.h>
-#include <libglademm.h>
 #include <bakery/Configuration/Client.h>
 #include <list>
 

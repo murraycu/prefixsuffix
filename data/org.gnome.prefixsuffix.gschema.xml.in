@@ -17,12 +17,12 @@
 			<default>''</default>
 			<summary>The suffix to use when renaming, instead of the original suffix.</summary>
 		</key>
-		<key name="prefix" type="s">
-			<default>''</default>
+		<key name="prefix" type="b">
+			<default>true</default>
 			<summary>Whether to find files to rename based on the prefix.</summary>
 		</key>
-		<key name="suffix" type="s">
-			<default>''</default>
+		<key name="suffix" type="b">
+			<default>false</default>
 			<summary>Whether to find files to rename based on the suffix.</summary>
 		</key>
 		<key name="check-operate-on-hidden" type="b">

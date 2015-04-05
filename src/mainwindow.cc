@@ -34,6 +34,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 {
   //set_border_width(12);
 
+  builder->get_widget("grid_inputs", m_grid_inputs);
+
   //Radiobuttons:
   builder->get_widget("radio_prefix", m_radio_prefix);
   m_radio_prefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
@@ -56,6 +58,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   m_button_process->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
   builder->get_widget("button_close", m_button_close);
   m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
+  builder->get_widget("button_stop", m_button_stop);
+  m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_stop) );
 
   //Check Buttons:
   builder->get_widget("check_operate_on_hidden", m_check_hidden);
@@ -111,7 +115,15 @@ void MainWindow::on_button_process()
 
 void MainWindow::set_ui_locked(bool locked)
 {
-  set_sensitive(!locked);
+  //Prevent/allowchanges to any of the criteria:
+  m_grid_inputs->set_sensitive(!locked);
+
+  //Prevent/allow a new start or a close:
+  m_button_process->set_sensitive(!locked);
+  m_button_close->set_sensitive(!locked);
+
+  //Prevent/allow a stop.
+  m_button_stop->set_sensitive(locked);
 
   Glib::RefPtr<Gdk::Window> window = get_window();
   if(!window)
@@ -245,8 +257,18 @@ void MainWindow::do_rename_files()
 
 void MainWindow::on_button_close()
 {
+  //Just in case:
+  stop_process();
+
   hide();
 }
+
+void MainWindow::on_button_stop()
+{
+  //Just in case:
+  stop_process();
+}
+
 
 void MainWindow::clear_lists()
 {

@@ -44,6 +44,7 @@ private:
 
   void on_button_process();
   void on_button_close();
+  void on_button_stop();
 
   void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
   void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
@@ -68,6 +69,7 @@ protected:
   // Widgets
 
   //From Glade file:
+  Gtk::Widget* m_grid_inputs;
   Gtk::RadioButton* m_radio_prefix;
   Gtk::RadioButton* m_radio_suffix;
   Gtk::Entry* m_entry_prefix_replace;
@@ -79,6 +81,7 @@ protected:
   Gtk::Widget* m_container_suffix;
   Gtk::Button* m_button_process;
   Gtk::Button* m_button_close;
+  Gtk::Button* m_button_stop;
   Gtk::CheckButton* m_check_hidden;
   Gtk::CheckButton* m_check_folders;
   Gtk::CheckButton* m_check_recurse;

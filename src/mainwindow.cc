@@ -226,7 +226,8 @@ void MainWindow::rename_next_file()
   file->set_display_name_async(uriNew,
     sigc::bind(
       sigc::mem_fun(*this, &MainWindow::on_set_display_name),
-      file));
+      file),
+    m_cancellable);
 }
 
 void MainWindow::do_rename_files()
@@ -259,6 +260,7 @@ void MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
   clear_lists();
+  m_cancellable = Gio::Cancellable::create();
 
   const Glib::ustring uri = m_entry_path->get_uri();
 
@@ -272,6 +274,7 @@ void MainWindow::request_next_files(const Glib::RefPtr<Gio::File>& directory, co
     sigc::bind(
       sigc::mem_fun(*this, &MainWindow::on_directory_next_files),
       directory, enumerator),
+    m_cancellable,
     5 /* number to request at once */);
 }
 
@@ -417,6 +420,7 @@ void MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
     sigc::bind(
       sigc::mem_fun(*this, &MainWindow::on_directory_enumerate_children),
       directory),
+    m_cancellable,
     G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
 }
 
@@ -546,6 +550,9 @@ void MainWindow::show_error(const Glib::ustring& message)
 
 void MainWindow::stop_process(const Glib::ustring& error_message)
 {
+  m_cancellable->cancel();
+  m_cancellable.reset();
+
   clear_lists();
 
   if(!error_message.empty())

@@ -84,8 +84,7 @@ protected:
   Gtk::CheckButton* m_check_recurse;
   Gtk::ProgressBar* m_progress_bar;
 
-  //Not from Glade file:
-  //Gnome::UI::AppBar m_Status;
+  Glib::RefPtr<Gio::Cancellable> m_cancellable;
 
   //GSettings:
   Bakery::Conf::Client m_conf_client;

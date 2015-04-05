@@ -28,56 +28,56 @@
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject),
-    m_ConfClient("org.gnome.prefixsuffix"),
+    m_conf_client("org.gnome.prefixsuffix"),
     m_progress_max(0),
     m_progress_count(0)
 {
   //set_border_width(12);
 
   //Radiobuttons:
-  builder->get_widget("radio_prefix", m_pRadioPrefix);
-  m_pRadioPrefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
-  builder->get_widget("radio_suffix",  m_pRadioSuffix);
-  m_pRadioSuffix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked) );
+  builder->get_widget("radio_prefix", m_radio_prefix);
+  m_radio_prefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
+  builder->get_widget("radio_suffix",  m_radio_suffix);
+  m_radio_suffix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked) );
 
   //Entrys
-  builder->get_widget("entry_prefix_replace", m_pEntryPrefixReplace);
-  builder->get_widget("entry_prefix_with", m_pEntryPrefixWith);
-  builder->get_widget("entry_suffix_replace", m_pEntrySuffixReplace);
-  builder->get_widget("entry_suffix_with", m_pEntrySuffixWith);
-  builder->get_widget("entry_path", m_pEntryPath);
+  builder->get_widget("entry_prefix_replace", m_entry_prefix_replace);
+  builder->get_widget("entry_prefix_with", m_entry_prefix_with);
+  builder->get_widget("entry_suffix_replace", m_entry_suffix_replace);
+  builder->get_widget("entry_suffix_with", m_entry_suffix_with);
+  builder->get_widget("entry_path", m_entry_path);
 
   //Containers:
-  builder->get_widget("table_prefix", m_pContainerPrefix);
-  builder->get_widget("table_suffix", m_pContainerSuffix);
+  builder->get_widget("table_prefix", m_container_prefix);
+  builder->get_widget("table_suffix", m_container_suffix);
 
   //Buttons:
-  builder->get_widget("button_process", m_pButtonProcess);
-  m_pButtonProcess->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
-  builder->get_widget("button_close", m_pButtonClose);
-  m_pButtonClose->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
+  builder->get_widget("button_process", m_button_process);
+  m_button_process->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
+  builder->get_widget("button_close", m_button_close);
+  m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
 
   //Check Buttons:
-  builder->get_widget("check_operate_on_hidden", m_pCheckHidden);
-  builder->get_widget("check_operate_on_folders", m_pCheckFolders);
-  builder->get_widget("check_recurse", m_pCheckRecurse);
+  builder->get_widget("check_operate_on_hidden", m_check_hidden);
+  builder->get_widget("check_operate_on_folders", m_check_folders);
+  builder->get_widget("check_recurse", m_check_recurse);
 
   //Progress bar:
-  builder->get_widget("progressbar", m_pProgressBar);
+  builder->get_widget("progressbar", m_progress_bar);
 
 
   //GConf: associate configuration keys with widgets. We use load() and save() later:
-  m_ConfClient.add("prefix-replace",  *m_pEntryPrefixReplace);
-  m_ConfClient.add("prefix-with",  *m_pEntryPrefixWith);
-  m_ConfClient.add("suffix-replace",  *m_pEntrySuffixReplace);
-  m_ConfClient.add("suffix-with",  *m_pEntrySuffixWith);
-  m_ConfClient.add("prefix",  *m_pRadioPrefix);
-  m_ConfClient.add("suffix",  *m_pRadioSuffix);
-  m_ConfClient.add("check-operate-on-hidden",  *m_pCheckHidden);
-  m_ConfClient.add("check-operate-on-folders",  *m_pCheckFolders);
-  m_ConfClient.add("check-recurse",  *m_pCheckRecurse);
+  m_conf_client.add("prefix-replace",  *m_entry_prefix_replace);
+  m_conf_client.add("prefix-with",  *m_entry_prefix_with);
+  m_conf_client.add("suffix-replace",  *m_entry_suffix_replace);
+  m_conf_client.add("suffix-with",  *m_entry_suffix_with);
+  m_conf_client.add("prefix",  *m_radio_prefix);
+  m_conf_client.add("suffix",  *m_radio_suffix);
+  m_conf_client.add("check-operate-on-hidden",  *m_check_hidden);
+  m_conf_client.add("check-operate-on-folders",  *m_check_folders);
+  m_conf_client.add("check-recurse",  *m_check_recurse);
 
-  m_ConfClient.load(); //Fill the widgets from the stored preferences.
+  m_conf_client.load(); //Fill the widgets from the stored preferences.
 
 
   //set_statusbar(m_Status);
@@ -91,14 +91,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_radio_prefix_clicked()
 {
-  bool enable = m_pRadioPrefix->get_active();
-  m_pContainerPrefix->set_sensitive(enable);
+  bool enable = m_radio_prefix->get_active();
+  m_container_prefix->set_sensitive(enable);
 }
 
 void MainWindow::on_radio_suffix_clicked()
 {
-  bool enable = m_pRadioSuffix->get_active();
-  m_pContainerSuffix->set_sensitive(enable);
+  bool enable = m_radio_suffix->get_active();
+  m_container_suffix->set_sensitive(enable);
 }
 
 void MainWindow::on_button_process()
@@ -139,7 +139,7 @@ void MainWindow::set_ui_locked(bool locked)
 void MainWindow::do_rename()
 {
   //Check that there is enough information:
-  const Glib::ustring uri = m_pEntryPath->get_uri();
+  const Glib::ustring uri = m_entry_path->get_uri();
   if(uri.empty())
   {
     Gtk::MessageDialog dialog(*this, "Please choose a directory.");
@@ -147,33 +147,33 @@ void MainWindow::do_rename()
     return;
   }
   /*
-  else if ( !(Glib::file_test( m_pEntryPath->get_text(), Glib::FILE_TEST_IS_DIR)) )
+  else if ( !(Glib::file_test( m_entry_path->get_text(), Glib::FILE_TEST_IS_DIR)) )
   {
 
   }
   */
-  if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text().size() == 0) &&  (m_pEntryPrefixWith->get_text().size() == 0) )
+  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().size() == 0) &&  (m_entry_prefix_with->get_text().size() == 0) )
   {
     Gtk::MessageDialog dialog(*this, "Please enter values in the prefix fields.");
     dialog.run();
     return;
   }
 
-  if( m_pRadioPrefix->get_active() && (m_pEntryPrefixReplace->get_text() == m_pEntryPrefixWith->get_text()) )
+  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text() == m_entry_prefix_with->get_text()) )
   {
     Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
     dialog.run();
     return;
   }
 
-  if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text().size() == 0) &&  (m_pEntrySuffixWith->get_text().size() == 0) )
+  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().size() == 0) &&  (m_entry_suffix_with->get_text().size() == 0) )
   {
     Gtk::MessageDialog dialog(*this, "Please enter values in the suffix fields.");
     dialog.run();
     return;
   }
 
-  if( m_pRadioSuffix->get_active() && (m_pEntrySuffixReplace->get_text() == m_pEntrySuffixWith->get_text()) )
+  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text() == m_entry_suffix_with->get_text()) )
   {
     Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
     dialog.run();
@@ -188,7 +188,7 @@ void MainWindow::do_rename()
   if(!build_list_of_files())
     return;
 
-  if(m_listFiles.empty())
+  if(m_list_files.empty())
   {
     Gtk::MessageDialog dialog(*this, "No files have this prefix or suffix, so no files will be renamed.");
     dialog.run();
@@ -196,8 +196,8 @@ void MainWindow::do_rename()
   }
 
   //Rename the files:
-  type_listStrings::const_iterator iterNew = m_listFilesNew.begin();
-  for(type_listStrings::const_iterator iter = m_listFiles.begin(); iter != m_listFiles.end(); ++iter)
+  type_list_strings::const_iterator iterNew = m_list_files_new.begin();
+  for(type_list_strings::const_iterator iter = m_list_files.begin(); iter != m_list_files.end(); ++iter)
   {
     const Glib::ustring uri = *iter;
     const Glib::ustring uriNew = *iterNew;
@@ -232,11 +232,11 @@ void MainWindow::on_button_close()
 bool MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
-  m_listFiles.clear();
-  m_listFilesNew.clear();
-  m_listFolders.clear();
-  m_listFoldersNew.clear();
-  const Glib::ustring uri = m_pEntryPath->get_uri();
+  m_list_files.clear();
+  m_list_files_new.clear();
+  m_list_folders.clear();
+  m_list_folders_new.clear();
+  const Glib::ustring uri = m_entry_path->get_uri();
 
   //recurse:
   return build_list_of_files(uri);  
@@ -249,12 +249,12 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
   Glib::ustring directorypath_uri = directorypath_uri_in;
   canonical_folder_path(directorypath_uri);
 
-  bool bUseHidden = m_pCheckHidden->get_active();
-  const bool operate_on_folders = m_pCheckFolders->get_active();
-  const bool recurse_into_folders = m_pCheckRecurse->get_active();
+  bool bUseHidden = m_check_hidden->get_active();
+  const bool operate_on_folders = m_check_folders->get_active();
+  const bool recurse_into_folders = m_check_recurse->get_active();
 
   //Get the filenames in the directory:
-  type_listStrings listFolders;
+  type_list_strings list_folders;
   try
   {
     Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
@@ -291,13 +291,13 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
 
           //Add to list of folders, so we can recurse into them,
           //and maybe rename them:
-          listFolders.push_back(uri);
+          list_folders.push_back(uri);
         } else {
           const Glib::ustring& basename_new = get_new_basename(basename);
           if(basename_new != basename) //Ignore it if the prefix/suffix change had no effect
           {
-            m_listFiles.push_back(uri);
-            m_listFilesNew.push_back(basename_new);
+            m_list_files.push_back(uri);
+            m_list_files_new.push_back(basename_new);
           }
         }
       }
@@ -316,7 +316,7 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
   }
 
   // Examine the sub-directories:
-  for(type_listStrings::const_iterator iter = listFolders.begin(); iter != listFolders.end(); ++iter)
+  for(type_list_strings::const_iterator iter = list_folders.begin(); iter != list_folders.end(); ++iter)
   {
     //Recurse to get files in this folder.
     const Glib::ustring child_dir = *iter;
@@ -334,8 +334,8 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
       const Glib::ustring& filepath_new = get_new_basename(basename);
       if(child_dir != filepath_new) //Ignore it if the prefix/suffix change had no effect
       {
-        m_listFolders.push_back(child_dir);
-        m_listFoldersNew.push_back(basename);
+        m_list_folders.push_back(child_dir);
+        m_list_folders_new.push_back(basename);
       }
     }
   }
@@ -348,10 +348,10 @@ Glib::ustring MainWindow::get_new_basename(const Glib::ustring& basename)
   Glib::ustring filename_new;
 
   //Prefix:
-  if(m_pRadioPrefix->get_active())
+  if(m_radio_prefix->get_active())
   {
-    Glib::ustring strPrefixReplace = m_pEntryPrefixReplace->get_text();
-    Glib::ustring strPrefixWith = m_pEntryPrefixWith->get_text();
+    Glib::ustring strPrefixReplace = m_entry_prefix_replace->get_text();
+    Glib::ustring strPrefixWith = m_entry_prefix_with->get_text();
 
     if(strPrefixReplace.size()) //If an old prefix was specified
     {
@@ -380,10 +380,10 @@ Glib::ustring MainWindow::get_new_basename(const Glib::ustring& basename)
 
 
   //Suffix:
-  if(m_pRadioSuffix->get_active())
+  if(m_radio_suffix->get_active())
   {
-    Glib::ustring strSuffixReplace = m_pEntrySuffixReplace->get_text();
-    Glib::ustring strSuffixWith = m_pEntrySuffixWith->get_text();
+    Glib::ustring strSuffixReplace = m_entry_suffix_replace->get_text();
+    Glib::ustring strSuffixWith = m_entry_suffix_with->get_text();
 
     //If the old suffix is there:
     if(strSuffixReplace.size()) //if an old suffix was specified
@@ -458,7 +458,7 @@ void MainWindow::get_folder_and_file(const Glib::ustring& filepath, Glib::ustrin
 void MainWindow::on_hide()
 {
   //Store the widgets' contents in GConf, for use when the app is restarted.
-  m_ConfClient.save();
+  m_conf_client.save();
 }
 
 

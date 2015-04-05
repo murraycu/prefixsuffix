@@ -52,38 +52,35 @@ private:
 protected:
   virtual void on_hide(); //override.
 
-  Glib::RefPtr<Gtk::Builder> m_refGlade;
-
   // Widgets
 
   //From Glade file:
-  Gtk::Widget* m_pWidgetTopLevel;
-  Gtk::RadioButton* m_pRadioPrefix;
-  Gtk::RadioButton* m_pRadioSuffix;
-  Gtk::Entry* m_pEntryPrefixReplace;
-  Gtk::Entry* m_pEntryPrefixWith;
-  Gtk::Entry* m_pEntrySuffixReplace;
-  Gtk::Entry* m_pEntrySuffixWith;
-  Gtk::FileChooserButton* m_pEntryPath;
-  Gtk::Widget* m_pContainerPrefix;
-  Gtk::Widget* m_pContainerSuffix;
-  Gtk::Button* m_pButtonProcess;
-  Gtk::Button* m_pButtonClose;
-  Gtk::CheckButton* m_pCheckHidden;
-  Gtk::CheckButton* m_pCheckFolders;
-  Gtk::CheckButton* m_pCheckRecurse;
-  Gtk::ProgressBar* m_pProgressBar;
+  Gtk::RadioButton* m_radio_prefix;
+  Gtk::RadioButton* m_radio_suffix;
+  Gtk::Entry* m_entry_prefix_replace;
+  Gtk::Entry* m_entry_prefix_with;
+  Gtk::Entry* m_entry_suffix_replace;
+  Gtk::Entry* m_entry_suffix_with;
+  Gtk::FileChooserButton* m_entry_path;
+  Gtk::Widget* m_container_prefix;
+  Gtk::Widget* m_container_suffix;
+  Gtk::Button* m_button_process;
+  Gtk::Button* m_button_close;
+  Gtk::CheckButton* m_check_hidden;
+  Gtk::CheckButton* m_check_folders;
+  Gtk::CheckButton* m_check_recurse;
+  Gtk::ProgressBar* m_progress_bar;
 
   //Not from Glade file:
   //Gnome::UI::AppBar m_Status;
 
   //GSettings:
-  Bakery::Conf::Client m_ConfClient;
+  Bakery::Conf::Client m_conf_client;
 
   //List of files to rename:
-  typedef std::list<Glib::ustring> type_listStrings;
-  type_listStrings m_listFiles, m_listFilesNew, m_listFolders, m_listFoldersNew;
+  typedef std::list<Glib::ustring> type_list_strings;
+  type_list_strings m_list_files, m_list_files_new, m_list_folders, m_list_folders_new;
 
-  type_listStrings::size_type m_progress_max, m_progress_count;
+  type_list_strings::size_type m_progress_max, m_progress_count;
 };
 

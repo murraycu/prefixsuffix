@@ -180,9 +180,11 @@ void MainWindow::do_rename()
 
   //m_Status.push(_("Generating list of files."));
   //m_Status.refresh();
-  if(!build_list_of_files())
-    return;
+  build_list_of_files();
+}
 
+void MainWindow::do_rename_files()
+{
   if(m_list_files.empty())
   {
     show_error(_("No files have this prefix or suffix, so no files will be renamed."));
@@ -212,9 +214,6 @@ void MainWindow::do_rename()
 
     ++iterNew;
   }
-
-  //Rename the folders:
-  //TODO
 }
 
 void MainWindow::on_button_close()
@@ -222,7 +221,7 @@ void MainWindow::on_button_close()
   hide();
 }
 
-bool MainWindow::build_list_of_files()
+void MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
   m_list_files.clear();
@@ -232,10 +231,19 @@ bool MainWindow::build_list_of_files()
   const Glib::ustring uri = m_entry_path->get_uri();
 
   //recurse:
-  return build_list_of_files(uri);  
+  build_list_of_files(uri);  
 }
-  
-void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory)
+
+void MainWindow::request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
+{
+  enumerator->next_files_async(
+    sigc::bind(
+      sigc::mem_fun(*this, &MainWindow::on_directory_next_file),
+      directory, enumerator),
+    5 /* number to request at once */);
+}
+void MainWindow::on_directory_next_file(const Glib::RefPtr<Gio::AsyncResult>& result,
+  const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
   bool bUseHidden = m_check_hidden->get_active();
   const bool operate_on_folders = m_check_folders->get_active();
@@ -245,10 +253,28 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
 
   try
   {
-    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children_finish(result);
-    Glib::RefPtr<Gio::FileInfo> info = enumerator->next_file();
-    while(info)
+    typedef std::list< Glib::RefPtr<Gio::FileInfo> > type_list_file_info;
+    type_list_file_info list_info =  enumerator->next_files_finish(result);
+
+    //If we have finished enumerating this directory:
+    if(list_info.empty())
     {
+      type_set_files::iterator iter = m_directory_enumerations_in_progress.find(directory);
+      if(iter != m_directory_enumerations_in_progress.end())
+        m_directory_enumerations_in_progress.erase(iter);
+
+      if(m_directory_enumerations_in_progress.empty())
+      {
+        //We have finished listing all the files and directories:
+        do_rename_files();
+      }
+
+      return;
+    }
+
+    for(type_list_file_info::const_iterator iter = list_info.begin(); iter != list_info.end(); ++iter)
+    {
+      Glib::RefPtr<Gio::FileInfo> info = *iter;
       const Glib::RefPtr<const Gio::File> child = directory->get_child(info->get_name());
 
       bool bUse = true;
@@ -270,7 +296,7 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
       {
         Glib::ustring uri = child->get_uri();
 
-        const Gio::FileType file_type = child->query_file_type();
+        const Gio::FileType file_type = info->get_file_type();
         if(file_type == Gio::FILE_TYPE_DIRECTORY)
         {
           //It's a folder:
@@ -288,8 +314,6 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
           }
         }
       }
-
-      info = enumerator->next_file();
     }
   }
   catch(const Glib::Error& ex)
@@ -301,6 +325,8 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
     return; //Stop trying.
   }
 
+  request_next_files(directory, enumerator);
+
   // Examine the sub-directories:
   for(type_list_strings::const_iterator iter = list_folders.begin(); iter != list_folders.end(); ++iter)
   {
@@ -309,8 +335,7 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
 
     if(recurse_into_folders)
     {
-      if(!build_list_of_files(child_dir))
-        return;
+      build_list_of_files(child_dir);
     }
 
     if(operate_on_folders)
@@ -327,7 +352,24 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
   }
 }
 
-bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
+void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory)
+{
+  try
+  {
+    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children_finish(result);
+    request_next_files(directory, enumerator);
+  }
+  catch(const Glib::Error& ex)
+  {
+    show_error(_("PrefixSuffix failed while obtaining the list of files."));
+
+    std::cerr << G_STRFUNC << ": Exception with directory uri=" << directory->get_uri() << ": " << ex.what() << std::endl;
+
+    return; //Stop trying.
+  }
+}
+
+void MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
 {
   //This is a recursion.
 
@@ -336,12 +378,14 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
 
   //Get the filenames in the directory:
   Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
+  m_directory_enumerations_in_progress.insert(
+    m_directory_enumerations_in_progress.end(),
+    directory);
   directory->enumerate_children_async(
     sigc::bind(
       sigc::mem_fun(*this, &MainWindow::on_directory_enumerate_children),
-      directory));
-
-  return true; //Success.
+      directory),
+    G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
 }
 
 Glib::ustring MainWindow::get_new_basename(const Glib::ustring& basename)

@@ -21,6 +21,7 @@
 #include <gtkmm.h>
 #include <bakery/Configuration/Client.h>
 #include <list>
+#include <set> //TODO: Use unordered_set with C++11.
 
 class MainWindow : public Gtk::Window
 {
@@ -30,8 +31,8 @@ public:
 
 private:
 
-  virtual bool build_list_of_files();
-  virtual bool build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
+  virtual void build_list_of_files();
+  virtual void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
   virtual Glib::ustring get_new_basename(const Glib::ustring& filepath);
   static bool file_is_hidden(const Glib::ustring& filepath);
   static void canonical_folder_path(Glib::ustring& folderpath);
@@ -45,8 +46,12 @@ private:
   virtual void on_button_close();
 
   void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
+  void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
+  void on_directory_next_file(const Glib::RefPtr<Gio::AsyncResult>& result,
+    const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
 
   void do_rename();
+  void do_rename_files();
   void set_ui_locked(bool locked = true);
   void show_error(const Glib::ustring& message);
 
@@ -83,6 +88,9 @@ protected:
   //List of files to rename:
   typedef std::list<Glib::ustring> type_list_strings;
   type_list_strings m_list_files, m_list_files_new, m_list_folders, m_list_folders_new;
+
+  typedef std::set< Glib::RefPtr<Gio::File> > type_set_files;
+  type_set_files m_directory_enumerations_in_progress;
 
   type_list_strings::size_type m_progress_max, m_progress_count;
 };

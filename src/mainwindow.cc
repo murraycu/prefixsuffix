@@ -26,96 +26,44 @@
 #include <glibmm/i18n.h>
 
 
-MainWindow::MainWindow()
-  : m_ConfClient("org.gnome.prefixsuffix"),
+MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::Window(cobject),
+    m_ConfClient("org.gnome.prefixsuffix"),
     m_progress_max(0),
     m_progress_count(0)
 {
   //set_border_width(12);
 
-  //Glade:
-  //Look for the installed .glade file:
-  try
-  {
-    m_refGlade = Gtk::Builder::create_from_file(PREFIXSUFFIX_GLADEDIR "prefixsuffix.glade");
-  }
-  catch(const Gtk::BuilderError& ex)
-  {
-    std::cerr << G_STRFUNC << ": BuilderError Exception: " << ex.what() << std::endl;
-  }
-  catch(const Glib::MarkupError& ex)
-  {
-    std::cerr << G_STRFUNC << ": MarkupError exception:" << ex.what() << std::endl;
-  }
-  catch(const Glib::FileError& ex)
-  {
-    std::cerr << G_STRFUNC << ": FileError: exception" << ex.what() << std::endl;
-  }
-  catch(const Glib::Error& ex)
-  {
-    std::cerr << G_STRFUNC << ": Exception of unexpected type: " << ex.what() << std::endl;
-  }
+  //Radiobuttons:
+  builder->get_widget("radio_prefix", m_pRadioPrefix);
+  m_pRadioPrefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
+  builder->get_widget("radio_suffix",  m_pRadioSuffix);
+  m_pRadioSuffix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked) );
 
-  //This doesn't actually work, because an invalid GladeXML object is created. I filed a bug:
-  if(!m_refGlade)
-  {
-    //Try the local directory. Maybe somebody is just running this without installing it:
-    g_warning("Prefix: Failed to find installed glade file. Looking for it in the current directory.\n");
-    m_refGlade = Gtk::Builder::create_from_file("prefixsuffix.glade");
-  }
+  //Entrys
+  builder->get_widget("entry_prefix_replace", m_pEntryPrefixReplace);
+  builder->get_widget("entry_prefix_with", m_pEntryPrefixWith);
+  builder->get_widget("entry_suffix_replace", m_pEntrySuffixReplace);
+  builder->get_widget("entry_suffix_with", m_pEntrySuffixWith);
+  builder->get_widget("entry_path", m_pEntryPath);
 
-  //If it still can't be found:
-  if(!m_refGlade)
-    g_warning("PrefixSuffix: Could not find prefixsuffix.glade.\n");
+  //Containers:
+  builder->get_widget("table_prefix", m_pContainerPrefix);
+  builder->get_widget("table_suffix", m_pContainerSuffix);
 
-  //Get the top-level window in the glade file:
-  Gtk::Window* pWindow = 0;
-  m_refGlade->get_widget("window", pWindow);
-  if(pWindow)
-  {
-    //Get the top-level container widget:
-    m_refGlade->get_widget("toplevel", m_pWidgetTopLevel);
-    if(m_pWidgetTopLevel)
-    {
-      //Remove it from the Window and add it to this MainWindow:
-      m_pWidgetTopLevel->reference(); //ref it while it is unparented.
-      pWindow->remove();
+  //Buttons:
+  builder->get_widget("button_process", m_pButtonProcess);
+  m_pButtonProcess->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
+  builder->get_widget("button_close", m_pButtonClose);
+  m_pButtonClose->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
 
-      add(*m_pWidgetTopLevel);
-      m_pWidgetTopLevel->unreference();
-    }
+  //Check Buttons:
+  builder->get_widget("check_operate_on_hidden", m_pCheckHidden);
+  builder->get_widget("check_operate_on_folders", m_pCheckFolders);
+  builder->get_widget("check_recurse", m_pCheckRecurse);
 
-    //Radiobuttons:
-    m_refGlade->get_widget("radio_prefix", m_pRadioPrefix);
-    m_pRadioPrefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
-    m_refGlade->get_widget("radio_suffix",  m_pRadioSuffix);
-    m_pRadioSuffix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked) );
-
-    //Entrys
-    m_refGlade->get_widget("entry_prefix_replace", m_pEntryPrefixReplace);
-    m_refGlade->get_widget("entry_prefix_with", m_pEntryPrefixWith);
-    m_refGlade->get_widget("entry_suffix_replace", m_pEntrySuffixReplace);
-    m_refGlade->get_widget("entry_suffix_with", m_pEntrySuffixWith);
-    m_refGlade->get_widget("entry_path", m_pEntryPath);
-
-    //Containers:
-    m_refGlade->get_widget("table_prefix", m_pContainerPrefix);
-    m_refGlade->get_widget("table_suffix", m_pContainerSuffix);
-
-    //Buttons:
-    m_refGlade->get_widget("button_process", m_pButtonProcess);
-    m_pButtonProcess->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
-    m_refGlade->get_widget("button_close", m_pButtonClose);
-    m_pButtonClose->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
-
-    //Check Buttons:
-    m_refGlade->get_widget("check_operate_on_hidden", m_pCheckHidden);
-    m_refGlade->get_widget("check_operate_on_folders", m_pCheckFolders);
-    m_refGlade->get_widget("check_recurse", m_pCheckRecurse);
-
-    //Progress bar:
-    m_refGlade->get_widget("progressbar", m_pProgressBar);
-  }
+  //Progress bar:
+  builder->get_widget("progressbar", m_pProgressBar);
 
 
   //GConf: associate configuration keys with widgets. We use load() and save() later:

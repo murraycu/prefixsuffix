@@ -25,7 +25,7 @@
 class MainWindow : public Gtk::Window
 {
 public:
-  MainWindow();
+  MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   virtual ~MainWindow();
 
 private:

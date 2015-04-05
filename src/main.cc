@@ -31,9 +31,48 @@ main(int argc, char* argv[])
 {
   Gtk::Main main(argc, argv);
 
-  MainWindow app;
+  //Glade:
+  Glib::RefPtr<Gtk::Builder> builder;
 
-  main.run(app);
+  //Look for the installed .glade file:
+  try
+  {
+    builder = Gtk::Builder::create_from_file(PREFIXSUFFIX_GLADEDIR "prefixsuffix.glade");
+  }
+  catch(const Gtk::BuilderError& ex)
+  {
+    std::cerr << G_STRFUNC << ": BuilderError Exception: " << ex.what() << std::endl;
+  }
+  catch(const Glib::MarkupError& ex)
+  {
+    std::cerr << G_STRFUNC << ": MarkupError exception:" << ex.what() << std::endl;
+  }
+  catch(const Glib::FileError& ex)
+  {
+    std::cerr << G_STRFUNC << ": FileError: exception" << ex.what() << std::endl;
+  }
+  catch(const Glib::Error& ex)
+  {
+    std::cerr << G_STRFUNC << ": Exception of unexpected type: " << ex.what() << std::endl;
+  }
+
+  if(!builder)
+  {
+    //Try the local directory. Maybe somebody is just running this without installing it:
+    g_warning("Prefix: Failed to find installed glade file. Looking for it in the current directory.\n");
+    builder = Gtk::Builder::create_from_file("prefixsuffix.glade");
+  }
+
+  //If it still can't be found:
+  if(!builder)
+    g_warning("PrefixSuffix: Could not find prefixsuffix.glade.\n");
+
+  MainWindow* window = 0;
+  builder->get_widget_derived("window", window);
+
+  main.run(*window);
+
+  delete window;
 
   return 0;
 }

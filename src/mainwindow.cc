@@ -142,7 +142,7 @@ void MainWindow::do_rename()
   const Glib::ustring uri = m_entry_path->get_uri();
   if(uri.empty())
   {
-    show_error("Please choose a directory.");
+    show_error(_("Please choose a directory."));
     return;
   }
   /*
@@ -153,25 +153,25 @@ void MainWindow::do_rename()
   */
   if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().size() == 0) &&  (m_entry_prefix_with->get_text().size() == 0) )
   {
-    show_error("Please enter values in the prefix fields.");
+    show_error(_("Please enter values in the prefix fields."));
     return;
   }
 
   if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text() == m_entry_prefix_with->get_text()) )
   {
-    show_error("The Replace and With values are identical.");
+    show_error(_("The Replace and With values are identical."));
     return;
   }
 
   if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().size() == 0) &&  (m_entry_suffix_with->get_text().size() == 0) )
   {
-    show_error("Please enter values in the suffix fields.");
+    show_error(_("Please enter values in the suffix fields."));
     return;
   }
 
   if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text() == m_entry_suffix_with->get_text()) )
   {
-    show_error("The Replace and With values are identical.");
+    show_error(_("The Replace and With values are identical."));
     return;
   }
 
@@ -185,7 +185,7 @@ void MainWindow::do_rename()
 
   if(m_list_files.empty())
   {
-    show_error("No files have this prefix or suffix, so no files will be renamed.");
+    show_error(_("No files have this prefix or suffix, so no files will be renamed."));
     return;
   }
 
@@ -206,7 +206,7 @@ void MainWindow::do_rename()
     catch(const Glib::Error& ex)
     {
       std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name(): " << ex.what() << std::endl;
-      show_error("PrefixSuffix failed while renaming the files.");
+      show_error(_("PrefixSuffix failed while renaming the files."));
       return;
     }
 
@@ -300,7 +300,7 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
   }
   catch(const Glib::Error& ex)
   {
-    show_error("PrefixSuffix failed while obtaining the list of files.");
+    show_error(_("PrefixSuffix failed while obtaining the list of files."));
 
     std::cerr << G_STRFUNC << ": Exception with directorypath_uri=" << directorypath_uri << ": " << ex.what() << std::endl;
 

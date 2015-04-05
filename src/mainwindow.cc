@@ -235,23 +235,17 @@ bool MainWindow::build_list_of_files()
   return build_list_of_files(uri);  
 }
   
-bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
+void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory)
 {
-  //This is a recursion.
-
-  Glib::ustring directorypath_uri = directorypath_uri_in;
-  canonical_folder_path(directorypath_uri);
-
   bool bUseHidden = m_check_hidden->get_active();
   const bool operate_on_folders = m_check_folders->get_active();
   const bool recurse_into_folders = m_check_recurse->get_active();
 
-  //Get the filenames in the directory:
   type_list_strings list_folders;
+
   try
   {
-    Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
-    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children();
+    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children_finish(result);
     Glib::RefPtr<Gio::FileInfo> info = enumerator->next_file();
     while(info)
     {
@@ -302,9 +296,9 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
   {
     show_error(_("PrefixSuffix failed while obtaining the list of files."));
 
-    std::cerr << G_STRFUNC << ": Exception with directorypath_uri=" << directorypath_uri << ": " << ex.what() << std::endl;
+    std::cerr << G_STRFUNC << ": Exception with directory uri=" << directory->get_uri() << ": " << ex.what() << std::endl;
 
-    return false; //Stop trying.
+    return; //Stop trying.
   }
 
   // Examine the sub-directories:
@@ -316,7 +310,7 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
     if(recurse_into_folders)
     {
       if(!build_list_of_files(child_dir))
-        return false;
+        return;
     }
 
     if(operate_on_folders)
@@ -331,6 +325,21 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
       }
     }
   }
+}
+
+bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
+{
+  //This is a recursion.
+
+  Glib::ustring directorypath_uri = directorypath_uri_in;
+  canonical_folder_path(directorypath_uri);
+
+  //Get the filenames in the directory:
+  Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
+  directory->enumerate_children_async(
+    sigc::bind(
+      sigc::mem_fun(*this, &MainWindow::on_directory_enumerate_children),
+      directory));
 
   return true; //Success.
 }

@@ -44,6 +44,8 @@ private:
   virtual void on_button_process();
   virtual void on_button_close();
 
+  void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
+
   void do_rename();
   void set_ui_locked(bool locked = true);
   void show_error(const Glib::ustring& message);

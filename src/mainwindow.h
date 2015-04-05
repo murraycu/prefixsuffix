@@ -46,6 +46,7 @@ private:
 
   void do_rename();
   void set_ui_locked(bool locked = true);
+  void show_error(const Glib::ustring& message);
 
   Glib::RefPtr<Gdk::Cursor> m_old_cursor;
 

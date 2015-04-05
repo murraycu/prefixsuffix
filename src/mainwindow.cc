@@ -142,8 +142,7 @@ void MainWindow::do_rename()
   const Glib::ustring uri = m_entry_path->get_uri();
   if(uri.empty())
   {
-    Gtk::MessageDialog dialog(*this, "Please choose a directory.");
-    dialog.run();
+    show_error("Please choose a directory.");
     return;
   }
   /*
@@ -154,29 +153,25 @@ void MainWindow::do_rename()
   */
   if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().size() == 0) &&  (m_entry_prefix_with->get_text().size() == 0) )
   {
-    Gtk::MessageDialog dialog(*this, "Please enter values in the prefix fields.");
-    dialog.run();
+    show_error("Please enter values in the prefix fields.");
     return;
   }
 
   if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text() == m_entry_prefix_with->get_text()) )
   {
-    Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
-    dialog.run();
+    show_error("The Replace and With values are identical.");
     return;
   }
 
   if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().size() == 0) &&  (m_entry_suffix_with->get_text().size() == 0) )
   {
-    Gtk::MessageDialog dialog(*this, "Please enter values in the suffix fields.");
-    dialog.run();
+    show_error("Please enter values in the suffix fields.");
     return;
   }
 
   if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text() == m_entry_suffix_with->get_text()) )
   {
-    Gtk::MessageDialog dialog(*this, "The Replace and With values are identical.");
-    dialog.run();
+    show_error("The Replace and With values are identical.");
     return;
   }
 
@@ -190,8 +185,7 @@ void MainWindow::do_rename()
 
   if(m_list_files.empty())
   {
-    Gtk::MessageDialog dialog(*this, "No files have this prefix or suffix, so no files will be renamed.");
-    dialog.run();
+    show_error("No files have this prefix or suffix, so no files will be renamed.");
     return;
   }
 
@@ -212,8 +206,7 @@ void MainWindow::do_rename()
     catch(const Glib::Error& ex)
     {
       std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name(): " << ex.what() << std::endl;
-      Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while renaming the files.");
-      dialog.run();
+      show_error("PrefixSuffix failed while renaming the files.");
       return;
     }
 
@@ -307,8 +300,7 @@ bool MainWindow::build_list_of_files(const Glib::ustring& directorypath_uri_in)
   }
   catch(const Glib::Error& ex)
   {
-    Gtk::MessageDialog dialog(*this, "PrefixSuffix failed while obtaining the list of files.");
-    dialog.run();
+    show_error("PrefixSuffix failed while obtaining the list of files.");
 
     std::cerr << G_STRFUNC << ": Exception with directorypath_uri=" << directorypath_uri << ": " << ex.what() << std::endl;
 
@@ -459,6 +451,12 @@ void MainWindow::on_hide()
 {
   //Store the widgets' contents in GConf, for use when the app is restarted.
   m_conf_client.save();
+}
+
+void MainWindow::show_error(const Glib::ustring& message)
+{
+  Gtk::MessageDialog dialog(*this, message);
+  dialog.run();
 }
 
 

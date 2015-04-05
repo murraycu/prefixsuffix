@@ -20,7 +20,7 @@
 
 #include <gtkmm.h>
 #include <bakery/Configuration/Client.h>
-#include <list>
+#include <queue>
 #include <set> //TODO: Use unordered_set with C++11.
 
 class MainWindow : public Gtk::Window
@@ -50,10 +50,15 @@ private:
   void on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
     const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
 
+  void rename_next_file();
+  void on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& file);
+
   void do_rename();
   void do_rename_files();
   void set_ui_locked(bool locked = true);
   void show_error(const Glib::ustring& message);
+  void stop_process(const Glib::ustring& message = Glib::ustring());
+  void clear_lists();
 
   Glib::RefPtr<Gdk::Cursor> m_old_cursor;
 
@@ -86,12 +91,12 @@ protected:
   Bakery::Conf::Client m_conf_client;
 
   //List of files to rename:
-  typedef std::list<Glib::ustring> type_list_strings;
-  type_list_strings m_list_files, m_list_files_new, m_list_folders, m_list_folders_new;
+  typedef std::queue<Glib::ustring> type_queue_strings;
+  type_queue_strings m_files, m_files_new, m_folders, m_folders_new;
 
   typedef std::set< Glib::RefPtr<Gio::File> > type_set_files;
   type_set_files m_directory_enumerations_in_progress;
 
-  type_list_strings::size_type m_progress_max, m_progress_count;
+  type_queue_strings::size_type m_progress_max, m_progress_count;
 };
 

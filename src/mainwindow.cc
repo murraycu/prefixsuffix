@@ -103,9 +103,10 @@ void MainWindow::on_radio_suffix_clicked()
 
 void MainWindow::on_button_process()
 {
+  //The UI will be unlocked in stop_process().
   set_ui_locked();
+
   do_rename();
-  set_ui_locked(false);
 }
 
 void MainWindow::set_ui_locked(bool locked)
@@ -183,37 +184,62 @@ void MainWindow::do_rename()
   build_list_of_files();
 }
 
+void MainWindow::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
+  const Glib::RefPtr<Gio::File>& file)
+{
+  try
+  {
+    Glib::RefPtr<Gio::File> file_renamed = file->set_display_name_finish(result);
+    if(!file_renamed)
+    {
+      std::cerr << G_STRFUNC << ": null result from Gio::File::set_display_name_finish()." << std::endl;
+      stop_process(_("PrefixSuffix failed while renaming the files."));
+      return;
+    }
+  }
+  catch(const Glib::Error& ex)
+  {
+    std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name_finish(): " << ex.what() << std::endl;
+    stop_process(_("PrefixSuffix failed while renaming the files."));
+    return;
+  }
+
+  rename_next_file();
+}
+
+void MainWindow::rename_next_file()
+{
+  if(m_files.empty())
+  {
+    stop_process();
+    return;
+  }
+
+  const Glib::ustring uri = m_files.front();
+  m_files.pop();
+  const Glib::ustring uriNew = m_files_new.front();
+  m_files_new.pop();
+  const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
+
+  std::cout << G_STRFUNC << ": debug: uri: " << uri << std::endl;
+  std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
+  file->set_display_name_async(uriNew,
+    sigc::bind(
+      sigc::mem_fun(*this, &MainWindow::on_set_display_name),
+      file));
+}
+
 void MainWindow::do_rename_files()
 {
-  if(m_list_files.empty())
+  if(m_files.empty())
   {
-    show_error(_("No files have this prefix or suffix, so no files will be renamed."));
+    stop_process(_("No files have this prefix or suffix, so no files will be renamed."));
     return;
   }
 
   //Rename the files:
-  type_list_strings::const_iterator iterNew = m_list_files_new.begin();
-  for(type_list_strings::const_iterator iter = m_list_files.begin(); iter != m_list_files.end(); ++iter)
-  {
-    const Glib::ustring uri = *iter;
-    const Glib::ustring uriNew = *iterNew;
-    const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
-
-    std::cout << G_STRFUNC << ": debug: uri: " << uri << std::endl;
-    std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
-    try
-    {
-      file->set_display_name(uriNew);
-    }
-    catch(const Glib::Error& ex)
-    {
-      std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name(): " << ex.what() << std::endl;
-      show_error(_("PrefixSuffix failed while renaming the files."));
-      return;
-    }
-
-    ++iterNew;
-  }
+  //TODO: Can we start a batch of these instead of doing them one by one?
+  rename_next_file();
 }
 
 void MainWindow::on_button_close()
@@ -221,13 +247,19 @@ void MainWindow::on_button_close()
   hide();
 }
 
+void MainWindow::clear_lists()
+{
+  m_files = type_queue_strings(); //There is no std::queue<>::clear() methods.
+  m_files_new = type_queue_strings();
+  m_folders = type_queue_strings();
+  m_folders_new = type_queue_strings();
+}
+
 void MainWindow::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
-  m_list_files.clear();
-  m_list_files_new.clear();
-  m_list_folders.clear();
-  m_list_folders_new.clear();
+  clear_lists();
+
   const Glib::ustring uri = m_entry_path->get_uri();
 
   //recurse:
@@ -250,6 +282,7 @@ void MainWindow::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& r
   const bool operate_on_folders = m_check_folders->get_active();
   const bool recurse_into_folders = m_check_recurse->get_active();
 
+  typedef std::list<Glib::ustring> type_list_strings;
   type_list_strings list_folders;
 
   try
@@ -310,8 +343,8 @@ void MainWindow::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& r
           const Glib::ustring& basename_new = get_new_basename(basename);
           if(basename_new != basename) //Ignore it if the prefix/suffix change had no effect
           {
-            m_list_files.push_back(uri);
-            m_list_files_new.push_back(basename_new);
+            m_files.push(uri);
+            m_files_new.push(basename_new);
           }
         }
       }
@@ -319,8 +352,7 @@ void MainWindow::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& r
   }
   catch(const Glib::Error& ex)
   {
-    show_error(_("PrefixSuffix failed while obtaining the list of files."));
-
+    stop_process(_("PrefixSuffix failed while obtaining the list of files."));
     std::cerr << G_STRFUNC << ": Exception with directory uri=" << directory->get_uri() << ": " << ex.what() << std::endl;
 
     return; //Stop trying.
@@ -346,8 +378,8 @@ void MainWindow::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& r
       const Glib::ustring& filepath_new = get_new_basename(basename);
       if(child_dir != filepath_new) //Ignore it if the prefix/suffix change had no effect
       {
-        m_list_folders.push_back(child_dir);
-        m_list_folders_new.push_back(basename);
+        m_folders.push(child_dir);
+        m_folders_new.push(basename);
       }
     }
   }
@@ -362,8 +394,7 @@ void MainWindow::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncRe
   }
   catch(const Glib::Error& ex)
   {
-    show_error(_("PrefixSuffix failed while obtaining the list of files."));
-
+    stop_process(_("PrefixSuffix failed while obtaining the list of files."));
     std::cerr << G_STRFUNC << ": Exception with directory uri=" << directory->get_uri() << ": " << ex.what() << std::endl;
 
     return; //Stop trying.
@@ -511,6 +542,16 @@ void MainWindow::show_error(const Glib::ustring& message)
 {
   Gtk::MessageDialog dialog(*this, message);
   dialog.run();
+}
+
+void MainWindow::stop_process(const Glib::ustring& error_message)
+{
+  clear_lists();
+
+  if(!error_message.empty())
+    show_error(error_message);
+
+  set_ui_locked(false);
 }
 
 

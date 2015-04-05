@@ -238,11 +238,12 @@ void MainWindow::request_next_files(const Glib::RefPtr<Gio::File>& directory, co
 {
   enumerator->next_files_async(
     sigc::bind(
-      sigc::mem_fun(*this, &MainWindow::on_directory_next_file),
+      sigc::mem_fun(*this, &MainWindow::on_directory_next_files),
       directory, enumerator),
     5 /* number to request at once */);
 }
-void MainWindow::on_directory_next_file(const Glib::RefPtr<Gio::AsyncResult>& result,
+
+void MainWindow::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
   const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
   bool bUseHidden = m_check_hidden->get_active();

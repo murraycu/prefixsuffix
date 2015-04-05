@@ -47,7 +47,7 @@ private:
 
   void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
   void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
-  void on_directory_next_file(const Glib::RefPtr<Gio::AsyncResult>& result,
+  void on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
     const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
 
   void do_rename();

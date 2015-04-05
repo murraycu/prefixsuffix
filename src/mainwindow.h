@@ -31,19 +31,19 @@ public:
 
 private:
 
-  virtual void build_list_of_files();
-  virtual void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
-  virtual Glib::ustring get_new_basename(const Glib::ustring& filepath);
+  void build_list_of_files();
+  void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
+  Glib::ustring get_new_basename(const Glib::ustring& filepath);
   static bool file_is_hidden(const Glib::ustring& filepath);
   static void canonical_folder_path(Glib::ustring& folderpath);
   static void get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename);
 
   // Signal Handlers:
-  virtual void on_radio_prefix_clicked();
-  virtual void on_radio_suffix_clicked();
+  void on_radio_prefix_clicked();
+  void on_radio_suffix_clicked();
 
-  virtual void on_button_process();
-  virtual void on_button_close();
+  void on_button_process();
+  void on_button_close();
 
   void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
   void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);

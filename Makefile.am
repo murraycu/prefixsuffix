@@ -1,11 +1,17 @@
 # Put compiled object files into the same sub-directory as their sources
 AUTOMAKE_OPTIONS = subdir-objects
 
+# Point to our macro directory and pick up user flags from the environment
+ACLOCAL_AMFLAGS  = -I macros ${ACLOCAL_FLAGS}
+
+# Make warnings always fatal at distcheck time, and disable execution
+# of tools that change files not installed by the package itself
+DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal --disable-update-mime-database
+
 SUBDIRS = po help docs
 
 
-
-# Let the code know where the glade dir is:
+AM_CXXFLAGS = $(PREFIXSUFFIX_WXXFLAGS)
 
 bin_PROGRAMS = prefixsuffix
 
@@ -30,6 +36,7 @@ EXTRA_DIST = \
 
 gladedir = $(datadir)/prefixsuffix/glade/
 
+# Let the code know where the glade dir is:
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
 	-I$(top_builddir) -I$(top_srcdir) \

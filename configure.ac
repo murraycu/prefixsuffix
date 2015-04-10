@@ -16,6 +16,15 @@ AC_PROG_CXX
 dnl Checks for libraries.
 PKG_CHECK_MODULES(DEPS, gtkmm-3.0)
 
+# Allow use of mm-common macros for the warnings option.
+MM_PREREQ([0.9.5])
+
+AC_LANG([C++])
+MM_ARG_ENABLE_WARNINGS([PREFIXSUFFIX_WXXFLAGS],
+                       [-Wall],
+                       [-pedantic -Wall -Wextra -Wformat-security -Wno-missing-field-initializers -DGSEAL_ENABLE],
+                       [G GDK GDK_PIXBUF GTK GLIBMM GDKMM CAIROMM PANGOMM GTKMM SIGCXX])
+
 
 # i18n
 IT_PROG_INTLTOOL([0.35])

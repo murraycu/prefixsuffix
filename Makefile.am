@@ -61,7 +61,7 @@ icon_DATA = prefixsuffix.png
 gsettings_SCHEMAS = data/org.gnome.prefixsuffix.gschema.xml
 @GSETTINGS_RULES@
 
-EXTRA_DIST = $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
+EXTRA_DIST += $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
 
 
@@ -69,5 +69,5 @@ EXTRA_DIST = $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
 # The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/
 # Because that's how gladedir is defined.
 glade_DATA = data/prefixsuffix.glade
-EXTRA_DIST = $(glade_DATA) 
+EXTRA_DIST += $(glade_DATA)
 

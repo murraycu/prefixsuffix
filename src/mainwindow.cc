@@ -30,6 +30,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
     m_conf_client("org.gnome.prefixsuffix"),
     m_renamer(0)
 {
+  set_title(_("PrefixSuffix"));
+
   builder->get_widget("grid_inputs", m_grid_inputs);
 
   //Radiobuttons:

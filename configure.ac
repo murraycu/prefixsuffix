@@ -37,13 +37,12 @@ AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE_TARNAME], [Define to the gettext package n
 
 GLIB_GSETTINGS
 
-dnl Create makefiles
-AC_OUTPUT(
-	Makefile
-	src/Makefile
-	po/Makefile.in
-	data/org.gnome.prefixsuffix.gschema.xml
-	help/Makefile
-	help/C/Makefile
-	docs/Makefile
-)
+AC_CONFIG_FILES([Makefile
+                 src/Makefile
+                 po/Makefile.in
+                 data/org.gnome.prefixsuffix.gschema.xml
+                 help/Makefile
+                 help/C/Makefile
+                 docs/Makefile])
+
+AC_OUTPUT

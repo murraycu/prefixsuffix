@@ -22,10 +22,10 @@
 
 
 Renamer::Renamer(const Glib::ustring& directory_path,
-    const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
-    const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
-    bool recurse_into_folders, bool operate_on_folders,
-    bool operate_on_hidden)
+  const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
+  const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
+  bool recurse_into_folders, bool operate_on_folders,
+  bool operate_on_hidden)
   : m_directory_path(directory_path),
     m_prefix_replace(prefix_replace),
     m_prefix_with(prefix_with),
@@ -170,7 +170,7 @@ void Renamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& resu
   try
   {
     typedef std::list< Glib::RefPtr<Gio::FileInfo> > type_list_file_info;
-    type_list_file_info list_info =  enumerator->next_files_finish(result);
+    type_list_file_info list_info = enumerator->next_files_finish(result);
 
     //If we have finished enumerating this directory:
     if(list_info.empty())

@@ -20,8 +20,7 @@
 
 #include <gtkmm.h>
 #include <bakery/Configuration/Client.h>
-#include <queue>
-#include <set> //TODO: Use unordered_set with C++11.
+#include "renamer.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -31,13 +30,6 @@ public:
 
 private:
 
-  void build_list_of_files();
-  void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
-  Glib::ustring get_new_basename(const Glib::ustring& filepath);
-  static bool file_is_hidden(const Glib::ustring& filepath);
-  static void canonical_folder_path(Glib::ustring& folderpath);
-  static void get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename);
-
   // Signal Handlers:
   void on_radio_prefix_clicked();
   void on_radio_suffix_clicked();
@@ -46,16 +38,8 @@ private:
   void on_button_close();
   void on_button_stop();
 
-  void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
-  void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
-  void on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
-    const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
-
-  void rename_next_file();
-  void on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& file);
-
   void do_rename();
-  void do_rename_files();
+
   void set_ui_locked(bool locked = true);
   void show_error(const Glib::ustring& message);
   void stop_process(const Glib::ustring& message = Glib::ustring());
@@ -65,6 +49,8 @@ private:
 
 protected:
   virtual void on_hide(); //override.
+
+  void on_renamer_stopped(const Glib::ustring& error_message);
 
   // Widgets
 
@@ -87,18 +73,9 @@ protected:
   Gtk::CheckButton* m_check_recurse;
   Gtk::ProgressBar* m_progress_bar;
 
-  Glib::RefPtr<Gio::Cancellable> m_cancellable;
-
   //GSettings:
   Bakery::Conf::Client m_conf_client;
 
-  //List of files to rename:
-  typedef std::queue<Glib::ustring> type_queue_strings;
-  type_queue_strings m_files, m_files_new, m_folders, m_folders_new;
-
-  typedef std::set< Glib::RefPtr<Gio::File> > type_set_files;
-  type_set_files m_directory_enumerations_in_progress;
-
-  type_queue_strings::size_type m_progress_max, m_progress_count;
+  Renamer* m_renamer;
 };
 

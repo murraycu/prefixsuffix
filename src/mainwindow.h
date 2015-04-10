@@ -50,6 +50,7 @@ private:
 protected:
   virtual void on_hide(); //override.
 
+  void on_renamer_progress(const double fraction);
   void on_renamer_stopped(const Glib::ustring& error_message);
 
   // Widgets

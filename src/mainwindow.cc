@@ -202,6 +202,8 @@ void MainWindow::do_rename()
 
   m_renamer->signal_stopped().connect(
     sigc::mem_fun(*this, &MainWindow::on_renamer_stopped));
+  m_renamer->signal_progress().connect(
+    sigc::mem_fun(*this, &MainWindow::on_renamer_progress));
   m_renamer->start();
 }
 
@@ -229,6 +231,11 @@ void MainWindow::show_error(const Glib::ustring& message)
 {
   Gtk::MessageDialog dialog(*this, message);
   dialog.run();
+}
+
+void MainWindow::on_renamer_progress(const double fraction)
+{
+   m_progress_bar->set_fraction(fraction);
 }
 
 void MainWindow::on_renamer_stopped(const Glib::ustring& error_message)

@@ -35,7 +35,18 @@ public:
   void stop();
 
   typedef sigc::signal<void, Glib::ustring> type_signal_stopped;
+
+  /** Emitted during renaming.
+   */
   type_signal_stopped signal_stopped();
+
+  /** Emitted after successful renaming (with no error_message string),
+   * or when renaming stops due to an error (with an error message string).
+   */
+  typedef sigc::signal<void, double> type_signal_progress;
+
+
+  type_signal_progress signal_progress();
 
 private:
 
@@ -78,8 +89,12 @@ private:
   //These just avoid repeated checks for empty strings:
   const bool m_prefix, m_suffix;
 
+  //The original number of files in m_files;
+  double m_count;
+
   type_queue_strings::size_type m_progress_max, m_progress_count;
 
   type_signal_stopped m_signal_stopped;
+  type_signal_progress m_signal_progress;
 };
 

@@ -47,6 +47,8 @@ Renamer::~Renamer()
 
 void Renamer::start()
 {
+  m_signal_progress.emit(0.0f);
+
   //Check that there is enough information:
   if(m_directory_path.empty())
   {
@@ -90,18 +92,26 @@ void Renamer::rename_next_file()
 {
   if(m_files.empty())
   {
+    //We have finished, so stop:
+    m_signal_progress.emit(1.0f);
     stop_process();
     return;
   }
 
+  //Tell the UI about our progress:
+  //TODO: Only signal for every n files?
+  const double progress_fraction = m_count / (m_count - m_files.size());
+  m_signal_progress.emit(progress_fraction);
+
+  //Rename the next file:
   const Glib::ustring uri = m_files.front();
   m_files.pop();
   const Glib::ustring uriNew = m_files_new.front();
   m_files_new.pop();
   const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
 
-  std::cout << G_STRFUNC << ": debug: uri: " << uri << std::endl;
-  std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
+  //std::cout << G_STRFUNC << ": debug: uri: " << uri << std::endl;
+  //std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
   file->set_display_name_async(uriNew,
     sigc::bind(
       sigc::mem_fun(*this, &Renamer::on_set_display_name),
@@ -119,6 +129,7 @@ void Renamer::do_rename_files()
 
   //Rename the files:
   //TODO: Can we start a batch of these instead of doing them one by one?
+  m_count = m_files.size();
   rename_next_file();
 }
 
@@ -425,6 +436,11 @@ void Renamer::stop_process(const Glib::ustring& error_message)
 Renamer::type_signal_stopped Renamer::signal_stopped()
 {
   return m_signal_stopped;
+}
+
+Renamer::type_signal_progress Renamer::signal_progress()
+{
+  return m_signal_progress;
 }
 
 

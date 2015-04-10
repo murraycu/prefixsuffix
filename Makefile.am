@@ -47,8 +47,7 @@ prefixsuffix_LDADD = $(DEPS_LIBS)
 
 # Desktop entry
 desktopdir		= $(datadir)/applications
-desktop_in_files	= prefixsuffix.desktop.in
-desktop_DATA 		= $(desktop_in_files:.desktop.in=.desktop)
+desktop_DATA 		= data/prefixsuffix.desktop
 @INTLTOOL_DESKTOP_RULE@
 
 # Icon
@@ -61,7 +60,7 @@ icon_DATA = prefixsuffix.png
 gsettings_SCHEMAS = data/org.gnome.prefixsuffix.gschema.xml
 @GSETTINGS_RULES@
 
-EXTRA_DIST += $(desktop_in_files) $(desktop_DATA) $(icon_DATA) \
+EXTRA_DIST += $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
 
 

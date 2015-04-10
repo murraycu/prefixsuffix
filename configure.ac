@@ -39,6 +39,7 @@ GLIB_GSETTINGS
 
 AC_CONFIG_FILES([Makefile
                  po/Makefile.in
+                 data/prefixsuffix.desktop.in
                  data/org.gnome.prefixsuffix.gschema.xml
                  help/Makefile
                  help/C/Makefile

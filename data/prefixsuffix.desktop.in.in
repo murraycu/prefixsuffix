@@ -8,4 +8,5 @@ Type=Application
 StartupNotify=true
 Icon=prefixsuffix
 Categories=Application;Utility
+StartupNotify=true
 X-GNOME-DocPath=prefixsuffix/prefixsuffix.xml

@@ -193,22 +193,22 @@ void Renamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& resu
       Glib::RefPtr<Gio::FileInfo> info = *iter;
       const Glib::RefPtr<const Gio::File> child = directory->get_child(info->get_name());
 
-      bool bUse = true;
+      bool use = true;
 
       const std::string basename = child->get_basename();
       //Ignore any non-file filenames:
       if( (basename == "..") || (basename == ".") || basename.empty() )
       {
-        bUse = false;
+        use = false;
       }
       else
       {
         //Check whether we should use hidden files:
         if(!m_operate_on_hidden && file_is_hidden(basename))
-          bUse = false;
+          use = false;
       }
 
-      if(bUse)
+      if(use)
       {
         Glib::ustring uri = child->get_uri();
 

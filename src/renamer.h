@@ -40,12 +40,12 @@ public:
    */
   type_signal_stopped signal_stopped();
 
+
+  typedef sigc::signal<void, double> type_signal_progress;
+
   /** Emitted after successful renaming (with no error_message string),
    * or when renaming stops due to an error (with an error message string).
    */
-  typedef sigc::signal<void, double> type_signal_progress;
-
-
   type_signal_progress signal_progress();
 
 private:

@@ -167,7 +167,7 @@ void MainWindow::do_rename()
 
   }
   */
-  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().size() == 0) &&  (m_entry_prefix_with->get_text().size() == 0) )
+  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().empty()) &&  (m_entry_prefix_with->get_text().empty()) )
   {
     stop_process(_("Please enter values in the prefix fields."));
     return;
@@ -179,7 +179,7 @@ void MainWindow::do_rename()
     return;
   }
 
-  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().size() == 0) &&  (m_entry_suffix_with->get_text().size() == 0) )
+  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().empty()) &&  (m_entry_suffix_with->get_text().empty()) )
   {
     stop_process(_("Please enter values in the suffix fields."));
     return;

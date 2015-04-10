@@ -310,7 +310,7 @@ Glib::ustring Renamer::get_new_basename(const Glib::ustring& basename)
   //Prefix:
   if(m_prefix)
   {
-    if(m_prefix_replace.size()) //If an old prefix was specified
+    if(!m_prefix_replace.empty()) //If an old prefix was specified
     {
       //If the old prefix is there:
       Glib::ustring::size_type posPrefix = basename.find(m_prefix_replace);
@@ -340,7 +340,7 @@ Glib::ustring Renamer::get_new_basename(const Glib::ustring& basename)
   if(m_suffix)
   {
     //If the old suffix is there:
-    if(m_suffix_replace.size()) //if an old suffix was specified
+    if(!m_suffix_replace.empty()) //if an old suffix was specified
     {
       Glib::ustring::size_type posSuffix = basename.rfind(m_suffix_replace);
       if(posSuffix != Glib::ustring::npos && ((basename.size() - posSuffix) == m_suffix_replace.size())) //if it was found, and if these were the last characters in the string.

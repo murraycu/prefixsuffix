@@ -91,13 +91,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_radio_prefix_clicked()
 {
-  bool enable = m_radio_prefix->get_active();
+  const bool enable = m_radio_prefix->get_active();
   m_container_prefix->set_sensitive(enable);
 }
 
 void MainWindow::on_radio_suffix_clicked()
 {
-  bool enable = m_radio_suffix->get_active();
+  const bool enable = m_radio_suffix->get_active();
   m_container_suffix->set_sensitive(enable);
 }
 

@@ -70,7 +70,7 @@ void Renamer::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
 {
   try
   {
-    Glib::RefPtr<Gio::File> file_renamed = file->set_display_name_finish(result);
+    const Glib::RefPtr<const Gio::File> file_renamed = file->set_display_name_finish(result);
     if(!file_renamed)
     {
       std::cerr << G_STRFUNC << ": null result from Gio::File::set_display_name_finish()." << std::endl;
@@ -170,7 +170,7 @@ void Renamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& resu
   try
   {
     typedef std::list< Glib::RefPtr<Gio::FileInfo> > type_list_file_info;
-    type_list_file_info list_info = enumerator->next_files_finish(result);
+    const type_list_file_info list_info = enumerator->next_files_finish(result);
 
     //If we have finished enumerating this directory:
     if(list_info.empty())
@@ -380,7 +380,7 @@ bool Renamer::file_is_hidden(const Glib::ustring& filename) //static
 void Renamer::canonical_folder_path(Glib::ustring& folderpath) //static
 {
   //Make sure that it has "/" at the end:
-  Glib::ustring::size_type size = folderpath.size();
+  const Glib::ustring::size_type size = folderpath.size();
   if(size > 0)
   {
     if(folderpath[size - 1] != '/') //TODO: Cross platform - mac uses ':'.
@@ -397,7 +397,7 @@ void Renamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& 
   //TODO: Use Uri::extract_short_name()?
 
   //Find right-most "/" separator:
-  Glib::ustring::size_type posSeparator = filepath.rfind("/");
+  const Glib::ustring::size_type posSeparator = filepath.rfind("/");
   if(posSeparator != Glib::ustring::npos) //If it was found.
   {
     folderpath = filepath.substr(0, posSeparator + 1); //include the "/".

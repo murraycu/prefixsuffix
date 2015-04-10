@@ -409,12 +409,6 @@ void Renamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& 
   }
 }
 
-void Renamer::show_error(const Glib::ustring& message)
-{
-  //TODO: Gtk::MessageDialog dialog(*this, message);
-  //dialog.run();
-}
-
 void Renamer::stop()
 {
   stop_process();

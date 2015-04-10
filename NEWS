@@ -1,3 +1,8 @@
+0.6.1:
+
+* Various minor corrections and code reorganisation.
+  (Murray Cumming)
+
 0.6.0:
 
 * Ported to gtkmm 3, removing dependencies on libglademm, gnome-vfsmm 

@@ -1,4 +1,4 @@
-AC_INIT([PrefixSuffix],[0.6.0],[http://bugzilla.gnome.org/enter_bug.cgi?product=PrefixSuffix],[prefixsuffix])
+AC_INIT([PrefixSuffix],[0.6.1],[http://bugzilla.gnome.org/enter_bug.cgi?product=PrefixSuffix],[prefixsuffix])
 AC_PREREQ(2.63)
 
 AC_CONFIG_SRCDIR([src/main.cc])

@@ -1,3 +1,7 @@
+0.6.2:
+* Show the app name in the window title.
+  (Murray Cumming)
+
 0.6.1:
 
 * Various minor corrections and code reorganisation.

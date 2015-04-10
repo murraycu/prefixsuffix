@@ -22,7 +22,6 @@
 #include <gtkmm/menu.h>
 #include <gtkmm/menubar.h>
 #include <gtkmm/messagedialog.h>
-#include <iostream>
 #include <glibmm/i18n.h>
 
 

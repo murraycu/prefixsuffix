@@ -29,7 +29,7 @@ public:
     bool recurse_into_folders = true, bool operate_on_folders = false,
     bool operate_on_hidden = false);
 
-  virtual ~Renamer();
+  ~Renamer();
 
   void start();
   void stop();

@@ -57,7 +57,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   builder->get_widget("button_close", m_button_close);
   m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
   builder->get_widget("button_stop", m_button_stop);
-  m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_stop) );
+  m_button_stop->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_stop) );
 
   //Check Buttons:
   builder->get_widget("check_operate_on_hidden", m_check_hidden);

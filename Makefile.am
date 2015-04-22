@@ -18,6 +18,8 @@ bin_PROGRAMS = prefixsuffix
 #List of source files needed to build the executable:
 prefixsuffix_SOURCES = \
 	src/main.cc \
+	src/application.h \
+	src/application.cc \
 	src/mainwindow.h \
 	src/mainwindow.cc \
 	src/renamer.h \

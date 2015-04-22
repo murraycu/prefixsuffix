@@ -16,6 +16,9 @@
  * USA
  */
 
+#ifndef PREFIXSUFFIX_RENAMER_H
+#define PREFIXSUFFIX_RENAMER_H
+
 #include <giomm/file.h>
 #include <queue>
 #include <set> //TODO: Use unordered_set with C++11.
@@ -100,3 +103,5 @@ private:
 };
 
 } //namespace PrefixSuffix
+
+#endif /* PREFIXSUFFIX_RENAMER_H */

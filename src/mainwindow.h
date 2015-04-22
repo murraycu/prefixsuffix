@@ -18,6 +18,9 @@
  * USA
  */
 
+#ifndef PREFIXSUFFIX_MAINWINDOW_H
+#define PREFIXSUFFIX_MAINWINDOW_H
+
 #include <gtkmm.h>
 #include <bakery/Configuration/Client.h>
 #include "renamer.h"
@@ -85,3 +88,4 @@ protected:
 
 } //namespace PrefixSuffix
 
+#endif /* PREFIXSUFFIX_MAINWINDOW_H */

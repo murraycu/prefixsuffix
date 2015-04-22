@@ -26,14 +26,25 @@
 
 #include <glibmm/i18n.h>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 namespace PrefixSuffix
 {
 
 Application::Application()
-: Gtk::Application("org.prefixsuffix.application"),
-  m_window(0)
+: Gtk::Application("org.prefixsuffix.application",
+    Gio::APPLICATION_HANDLES_COMMAND_LINE),
+  m_window(0),
+  m_stop_without_window(0)
 {
   Glib::set_application_name("PrefixSuffix");
+
+  signal_handle_local_options().connect(
+    sigc::mem_fun(*this, &Application::on_handle_local_options), false);
+
+  add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "version", 'v', _("Show the application's version"));
 }
 
 Glib::RefPtr<Application> Application::create()
@@ -90,6 +101,8 @@ void Application::create_window()
   //Make sure that the application runs for as long this window is still open:
   add_window(*m_window);
 
+  m_window->show();
+
   //Delete the window when it is hidden:
   m_window->signal_hide().connect(
     sigc::mem_fun(*this, &Application::on_window_hide));
@@ -103,14 +116,62 @@ void Application::on_window_hide()
 
 void Application::on_activate()
 {
+  //std::cout << G_STRFUNC << ": debug" << std::endl;
   // The application has been started, so let's show a window:
-  m_window->show();
+
+  if(m_stop_without_window)
+    return;
+
+  if(!m_window)
+    create_window();
 }
 
 void Application::on_startup()
 {
+  //std::cout << G_STRFUNC << ": debug" << std::endl;
   Gtk::Application::on_startup();
-  create_window();
+}
+
+// We have to override on_command_line() because we have set
+// Gio::APPLICATION_HANDLES_COMMAND_LINE, which we have to set when
+// handling the handle_local_options signal.
+// The default on_command_line() (used when 
+// Gio::APPLICATION_HANDLES_COMMAND_LINE is not set) calls activate(),
+// so, likewise, we now need to do that here.
+int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line)
+{
+  //std::cout << G_STRFUNC << ": debug" << std::endl;
+
+  activate();
+
+  //The local instance will eventually exit with this status code:
+  return EXIT_SUCCESS;
+}
+
+int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options)
+{
+  //std::cout << G_STRFUNC << ": debug" << std::endl;
+
+  if(!options)
+    std::cerr << G_STRFUNC << ": options is null." << std::endl;
+
+  bool version = false;
+  options->lookup_value("version", version);
+  if (version)
+  {
+    const Glib::ustring msg = Glib::ustring::compose(_("%1 - Version %2"), 
+      Glib::get_application_name(), PACKAGE_VERSION);
+    std::cout << msg << std::endl;
+
+    m_stop_without_window = true;
+    return EXIT_SUCCESS;
+  }
+
+  //Remove some options to show that we have handled them in the local instance,
+  //so they won't be passed to the primary (remote) instance:
+  options->remove("version");
+
+  return 0;
 }
 
 } //namespace PrefixSuffix

@@ -40,6 +40,9 @@ protected:
   //Overrides of default signal handlers:
   virtual void on_startup();
   virtual void on_activate();
+  virtual int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line);
+
+  int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
 
 private:
   void create_window();
@@ -50,6 +53,10 @@ private:
   //because we silently store the settings and don't want to have UI
   //to deal with multiple settings in multiple active instances.
   MainWindow* m_window;
+
+  //Whether to just stop the application after showing some stdout/stderr
+  //output, without showing the application window.
+  bool m_stop_without_window;
 };
 
 } //namespace PrefixSuffix

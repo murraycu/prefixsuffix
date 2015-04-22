@@ -22,7 +22,7 @@
 #define PREFIXSUFFIX_MAINWINDOW_H
 
 #include <gtkmm.h>
-#include <bakery/Configuration/Client.h>
+#include "bakery/Configuration/Client.h"
 #include "renamer.h"
 
 namespace PrefixSuffix

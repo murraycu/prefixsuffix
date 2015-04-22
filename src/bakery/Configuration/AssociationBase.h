@@ -21,7 +21,7 @@
 
 #include <gtkmm/widget.h>
 #include <giomm/settings.h>
-#include <bakery/Utilities/sharedptr.h>
+#include "bakery/Utilities/sharedptr.h"
 
 namespace Bakery
 {

@@ -20,6 +20,8 @@
 #include <iostream>
 #include <glibmm/i18n.h>
 
+namespace PrefixSuffix
+{
 
 Renamer::Renamer(const Glib::ustring& directory_path,
   const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
@@ -437,6 +439,7 @@ Renamer::type_signal_progress Renamer::signal_progress()
   return m_signal_progress;
 }
 
+} //namespace PrefixSuffix
 
 
 

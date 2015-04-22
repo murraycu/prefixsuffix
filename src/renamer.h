@@ -20,6 +20,9 @@
 #include <queue>
 #include <set> //TODO: Use unordered_set with C++11.
 
+namespace PrefixSuffix
+{
+
 class Renamer
 {
 public:
@@ -96,3 +99,4 @@ private:
   type_signal_progress m_signal_progress;
 };
 
+} //namespace PrefixSuffix

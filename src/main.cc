@@ -67,7 +67,7 @@ main(int argc, char* argv[])
   if(!builder)
     g_warning("PrefixSuffix: Could not find prefixsuffix.glade.\n");
 
-  MainWindow* window = 0;
+  PrefixSuffix::MainWindow* window = 0;
   builder->get_widget_derived("window", window);
 
   main.run(*window);

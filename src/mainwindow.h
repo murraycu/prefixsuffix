@@ -22,6 +22,9 @@
 #include <bakery/Configuration/Client.h>
 #include "renamer.h"
 
+namespace PrefixSuffix
+{
+
 class MainWindow : public Gtk::Window
 {
 public:
@@ -79,4 +82,6 @@ protected:
 
   Renamer* m_renamer;
 };
+
+} //namespace PrefixSuffix
 

@@ -24,6 +24,8 @@
 #include <gtkmm/messagedialog.h>
 #include <glibmm/i18n.h>
 
+namespace PrefixSuffix
+{
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject),
@@ -262,8 +264,4 @@ void MainWindow::stop_process(const Glib::ustring& error_message)
   set_ui_locked(false);
 }
 
-
-
-
-
-
+} //namespace PrefixSuffix

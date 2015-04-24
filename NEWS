@@ -1,3 +1,12 @@
+0.6.3:
+
+* Make the Stop button actually work.
+  (Juan R. García Blanco)
+* Add a --version command line option.
+  (Murray Cumming)
+* Internal changes: Use GtkApplication.
+  (Murray Cumming)
+
 0.6.2:
 * Show the app name in the window title.
   (Murray Cumming)

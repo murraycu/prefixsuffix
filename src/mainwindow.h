@@ -55,6 +55,7 @@ private:
 
 protected:
   virtual void on_hide(); //override.
+  virtual bool on_delete_event(GdkEventAny* event); //override.
 
   void on_renamer_progress(const double fraction);
   void on_renamer_stopped(const Glib::ustring& error_message);
@@ -73,7 +74,6 @@ protected:
   Gtk::Widget* m_container_prefix;
   Gtk::Widget* m_container_suffix;
   Gtk::Button* m_button_process;
-  Gtk::Button* m_button_close;
   Gtk::Button* m_button_stop;
   Gtk::CheckButton* m_check_hidden;
   Gtk::CheckButton* m_check_folders;

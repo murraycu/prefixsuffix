@@ -56,8 +56,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   //Buttons:
   builder->get_widget("button_process", m_button_process);
   m_button_process->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
-  builder->get_widget("button_close", m_button_close);
-  m_button_close->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_close) );
   builder->get_widget("button_stop", m_button_stop);
   m_button_stop->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_stop) );
 
@@ -120,7 +118,6 @@ void MainWindow::set_ui_locked(bool locked)
 
   //Prevent/allow a new start or a close:
   m_button_process->set_sensitive(!locked);
-  m_button_close->set_sensitive(!locked);
 
   //Prevent/allow a stop.
   m_button_stop->set_sensitive(locked);
@@ -212,10 +209,6 @@ void MainWindow::do_rename()
 
 void MainWindow::on_button_close()
 {
-  //Just in case:
-  stop_process();
-
-  hide();
 }
 
 void MainWindow::on_button_stop()
@@ -228,6 +221,14 @@ void MainWindow::on_hide()
 {
   //Store the widgets' contents in GConf, for use when the app is restarted.
   m_conf_client.save();
+}
+
+bool MainWindow::on_delete_event(GdkEventAny* event)
+{
+  //Just in case:
+  stop_process();
+
+  return false;
 }
 
 void MainWindow::show_error(const Glib::ustring& message)

@@ -24,6 +24,8 @@ prefixsuffix_SOURCES = \
 	src/mainwindow.cc \
 	src/file_renamer.h \
 	src/file_renamer.cc \
+	src/string_renamer.h \
+	src/string_renamer.cc \
 	src/bakery/Configuration/Association.h \
 	src/bakery/Configuration/Association.cc \
 	src/bakery/Configuration/AssociationBase.h \

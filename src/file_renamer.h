@@ -19,6 +19,7 @@
 #ifndef PREFIXSUFFIX_FILE_RENAMER_H
 #define PREFIXSUFFIX_FILE_RENAMER_H
 
+#include "string_renamer.h"
 #include <giomm/file.h>
 #include <queue>
 #include <set> //TODO: Use unordered_set with C++11.
@@ -58,7 +59,7 @@ private:
 
   void build_list_of_files();
   void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
-  Glib::ustring get_new_basename(const Glib::ustring& filepath);
+
   static bool file_is_hidden(const Glib::ustring& filepath);
   static void canonical_folder_path(Glib::ustring& folderpath);
   static void get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename);
@@ -86,12 +87,9 @@ private:
   type_set_files m_directory_enumerations_in_progress;
 
   const Glib::ustring m_directory_path;
-  const Glib::ustring m_prefix_replace, m_prefix_with;
-  const Glib::ustring m_suffix_replace, m_suffix_with;
+  const StringRenamer m_string_renamer;
   const bool m_recurse_into_folders, m_operate_on_folders, m_operate_on_hidden;
 
-  //These just avoid repeated checks for empty strings:
-  const bool m_prefix, m_suffix;
 
   //The original number of files in m_files;
   double m_count;

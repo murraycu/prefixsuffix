@@ -29,15 +29,10 @@ FileRenamer::FileRenamer(const Glib::ustring& directory_path,
   bool recurse_into_folders, bool operate_on_folders,
   bool operate_on_hidden)
   : m_directory_path(directory_path),
-    m_prefix_replace(prefix_replace),
-    m_prefix_with(prefix_with),
-    m_suffix_replace(suffix_replace),
-    m_suffix_with(suffix_with),
+    m_string_renamer(prefix_replace, prefix_with, suffix_replace, suffix_with),
     m_recurse_into_folders(recurse_into_folders),
     m_operate_on_folders(operate_on_folders),
     m_operate_on_hidden(operate_on_hidden),
-    m_prefix(!prefix_replace.empty() && !prefix_with.empty()),
-    m_suffix(!suffix_replace.empty() && !suffix_with.empty()),
     m_progress_max(0),
     m_progress_count(0)
 {
@@ -58,11 +53,13 @@ void FileRenamer::start()
     return;
   }
 
+/*
   if( m_prefix_replace.empty() && m_prefix_with.empty() && m_suffix_replace.empty() && m_suffix_with.empty() )
   {
     std::cerr << G_STRFUNC << ": prefix and suffix strings are empty." << std::endl;
     return;
   }
+*/
 
   build_list_of_files();
 }
@@ -224,7 +221,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
           //and maybe rename them:
           list_folders.push_back(uri);
         } else {
-          const Glib::ustring& basename_new = get_new_basename(basename);
+          const Glib::ustring& basename_new = m_string_renamer.get_new_basename(basename);
           if(basename_new != basename) //Ignore it if the prefix/suffix change had no effect
           {
             m_files.push(uri);
@@ -259,7 +256,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
     {
       const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(child_dir);
       const std::string basename = file->get_basename();
-      const Glib::ustring& filepath_new = get_new_basename(basename);
+      const Glib::ustring& filepath_new = m_string_renamer.get_new_basename(basename);
       if(child_dir != filepath_new) //Ignore it if the prefix/suffix change had no effect
       {
         m_folders.push(child_dir);
@@ -303,70 +300,6 @@ void FileRenamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
       directory),
     m_cancellable,
     G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
-}
-
-Glib::ustring FileRenamer::get_new_basename(const Glib::ustring& basename)
-{
-  Glib::ustring filename_new;
-
-  //Prefix:
-  if(m_prefix)
-  {
-    if(!m_prefix_replace.empty()) //If an old prefix was specified
-    {
-      //If the old prefix is there:
-      Glib::ustring::size_type posPrefix = basename.find(m_prefix_replace);
-      if(posPrefix != Glib::ustring::npos)
-      {
-        //Remove old prefix:
-        filename_new = basename.substr(m_prefix_replace.size());
-
-        //Add new prefix:
-        filename_new = m_prefix_with + filename_new;
-      }
-      else
-      {
-        //No change:
-        filename_new = basename;
-      }
-    }
-   else
-    {
-      //There's no old prefix to find, so just add the new prefix:
-      filename_new = m_prefix_with + basename;
-    }
-  }
-
-
-  //Suffix:
-  if(m_suffix)
-  {
-    //If the old suffix is there:
-    if(!m_suffix_replace.empty()) //if an old suffix was specified
-    {
-      Glib::ustring::size_type posSuffix = basename.rfind(m_suffix_replace);
-      if(posSuffix != Glib::ustring::npos && ((basename.size() - posSuffix) == m_suffix_replace.size())) //if it was found, and if these were the last characters in the string.
-      {
-        //Remove old suffix:
-        filename_new = basename.substr(0, posSuffix);
-
-        //Add new suffix:
-        filename_new += m_suffix_with;
-      }
-     else
-      {
-        //No change:
-        filename_new = basename;
-      }
-    }
-    else
-    {
-      //There's no old suffix to find, so just add the new suffix:
-      filename_new += m_suffix_with;
-    }
-  }
-
-  return filename_new;
 }
 
 bool FileRenamer::file_is_hidden(const Glib::ustring& filename) //static

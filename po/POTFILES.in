@@ -1,7 +1,7 @@
 src/application.cc
 src/main.cc
 src/mainwindow.cc
-src/renamer.cc
+src/file_renamer.cc
 data/prefixsuffix.desktop.in.in
 data/prefixsuffix.glade
 data/org.gnome.prefixsuffix.gschema.xml.in

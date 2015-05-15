@@ -23,7 +23,7 @@
 
 #include <gtkmm.h>
 #include "bakery/Configuration/Client.h"
-#include "renamer.h"
+#include "file_renamer.h"
 
 namespace PrefixSuffix
 {
@@ -83,7 +83,7 @@ protected:
   //GSettings:
   Bakery::Conf::Client m_conf_client;
 
-  Renamer* m_renamer;
+  FileRenamer* m_renamer;
 };
 
 } //namespace PrefixSuffix

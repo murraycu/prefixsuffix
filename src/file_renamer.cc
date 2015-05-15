@@ -16,14 +16,14 @@
  * USA
  */
 
-#include "renamer.h"
+#include "file_renamer.h"
 #include <iostream>
 #include <glibmm/i18n.h>
 
 namespace PrefixSuffix
 {
 
-Renamer::Renamer(const Glib::ustring& directory_path,
+FileRenamer::FileRenamer(const Glib::ustring& directory_path,
   const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
   const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
   bool recurse_into_folders, bool operate_on_folders,
@@ -43,11 +43,11 @@ Renamer::Renamer(const Glib::ustring& directory_path,
 {
 }
 
-Renamer::~Renamer()
+FileRenamer::~FileRenamer()
 {
 }
 
-void Renamer::start()
+void FileRenamer::start()
 {
   m_signal_progress.emit(0.0f);
 
@@ -67,7 +67,7 @@ void Renamer::start()
   build_list_of_files();
 }
 
-void Renamer::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
+void FileRenamer::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
   const Glib::RefPtr<Gio::File>& file)
 {
   try
@@ -90,7 +90,7 @@ void Renamer::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
   rename_next_file();
 }
 
-void Renamer::rename_next_file()
+void FileRenamer::rename_next_file()
 {
   if(m_files.empty())
   {
@@ -116,12 +116,12 @@ void Renamer::rename_next_file()
   //std::cout << G_STRFUNC << ": debug: uriNew: " << uriNew << std::endl;
   file->set_display_name_async(uriNew,
     sigc::bind(
-      sigc::mem_fun(*this, &Renamer::on_set_display_name),
+      sigc::mem_fun(*this, &FileRenamer::on_set_display_name),
       file),
     m_cancellable);
 }
 
-void Renamer::do_rename_files()
+void FileRenamer::do_rename_files()
 {
   if(m_files.empty())
   {
@@ -135,7 +135,7 @@ void Renamer::do_rename_files()
   rename_next_file();
 }
 
-void Renamer::clear_lists()
+void FileRenamer::clear_lists()
 {
   m_files = type_queue_strings(); //There is no std::queue<>::clear() methods.
   m_files_new = type_queue_strings();
@@ -143,7 +143,7 @@ void Renamer::clear_lists()
   m_folders_new = type_queue_strings();
 }
 
-void Renamer::build_list_of_files()
+void FileRenamer::build_list_of_files()
 {
   //This is the first run, rather than a recursion.
   clear_lists();
@@ -153,17 +153,17 @@ void Renamer::build_list_of_files()
   build_list_of_files(m_directory_path);  
 }
 
-void Renamer::request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
+void FileRenamer::request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
   enumerator->next_files_async(
     sigc::bind(
-      sigc::mem_fun(*this, &Renamer::on_directory_next_files),
+      sigc::mem_fun(*this, &FileRenamer::on_directory_next_files),
       directory, enumerator),
     m_cancellable,
     5 /* number to request at once */);
 }
 
-void Renamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
+void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
   const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
   typedef std::list<Glib::ustring> type_list_strings;
@@ -269,7 +269,7 @@ void Renamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& resu
   }
 }
 
-void Renamer::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory)
+void FileRenamer::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory)
 {
   try
   {
@@ -285,7 +285,7 @@ void Renamer::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResul
   }
 }
 
-void Renamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
+void FileRenamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
 {
   //This is a recursion.
 
@@ -299,13 +299,13 @@ void Renamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
     directory);
   directory->enumerate_children_async(
     sigc::bind(
-      sigc::mem_fun(*this, &Renamer::on_directory_enumerate_children),
+      sigc::mem_fun(*this, &FileRenamer::on_directory_enumerate_children),
       directory),
     m_cancellable,
     G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
 }
 
-Glib::ustring Renamer::get_new_basename(const Glib::ustring& basename)
+Glib::ustring FileRenamer::get_new_basename(const Glib::ustring& basename)
 {
   Glib::ustring filename_new;
 
@@ -369,7 +369,7 @@ Glib::ustring Renamer::get_new_basename(const Glib::ustring& basename)
   return filename_new;
 }
 
-bool Renamer::file_is_hidden(const Glib::ustring& filename) //static
+bool FileRenamer::file_is_hidden(const Glib::ustring& filename) //static
 {
   //See whether it has "." at the start:
   Glib::ustring::size_type size = filename.size();
@@ -379,7 +379,7 @@ bool Renamer::file_is_hidden(const Glib::ustring& filename) //static
     return false;
 }
 
-void Renamer::canonical_folder_path(Glib::ustring& folderpath) //static
+void FileRenamer::canonical_folder_path(Glib::ustring& folderpath) //static
 {
   //Make sure that it has "/" at the end:
   const Glib::ustring::size_type size = folderpath.size();
@@ -390,7 +390,7 @@ void Renamer::canonical_folder_path(Glib::ustring& folderpath) //static
   }
 }
 
-void Renamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename)
+void FileRenamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename)
 {
   //Initialize output parameters:
   folderpath.erase();
@@ -411,12 +411,12 @@ void Renamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& 
   }
 }
 
-void Renamer::stop()
+void FileRenamer::stop()
 {
   stop_process();
 }
 
-void Renamer::stop_process(const Glib::ustring& error_message)
+void FileRenamer::stop_process(const Glib::ustring& error_message)
 {
   if(m_cancellable)
   {
@@ -429,12 +429,12 @@ void Renamer::stop_process(const Glib::ustring& error_message)
   m_signal_stopped.emit(error_message);
 }
 
-Renamer::type_signal_stopped Renamer::signal_stopped()
+FileRenamer::type_signal_stopped FileRenamer::signal_stopped()
 {
   return m_signal_stopped;
 }
 
-Renamer::type_signal_progress Renamer::signal_progress()
+FileRenamer::type_signal_progress FileRenamer::signal_progress()
 {
   return m_signal_progress;
 }

@@ -16,8 +16,8 @@
  * USA
  */
 
-#ifndef PREFIXSUFFIX_RENAMER_H
-#define PREFIXSUFFIX_RENAMER_H
+#ifndef PREFIXSUFFIX_FILE_RENAMER_H
+#define PREFIXSUFFIX_FILE_RENAMER_H
 
 #include <giomm/file.h>
 #include <queue>
@@ -26,16 +26,16 @@
 namespace PrefixSuffix
 {
 
-class Renamer
+class FileRenamer
 {
 public:
-  Renamer(const Glib::ustring& directory_path,
+  FileRenamer(const Glib::ustring& directory_path,
     const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
     const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
     bool recurse_into_folders = true, bool operate_on_folders = false,
     bool operate_on_hidden = false);
 
-  ~Renamer();
+  ~FileRenamer();
 
   void start();
   void stop();
@@ -104,4 +104,4 @@ private:
 
 } //namespace PrefixSuffix
 
-#endif /* PREFIXSUFFIX_RENAMER_H */
+#endif /* PREFIXSUFFIX_FILE_RENAMER_H */

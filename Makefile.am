@@ -72,3 +72,5 @@ EXTRA_DIST += $(desktop_DATA) $(icon_DATA) \
 glade_DATA = data/prefixsuffix.glade
 EXTRA_DIST += $(glade_DATA)
 
+include Makefile_tests.am
+

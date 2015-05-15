@@ -1,3 +1,4 @@
+src/application.cc
 src/main.cc
 src/mainwindow.cc
 src/renamer.cc

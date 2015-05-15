@@ -22,7 +22,13 @@ check_PROGRAMS = \
 TESTS = \
 	tests/test_rename_strings
 
-tests_test_rename_strings_SOURCES = tests/test_rename_strings.cc
+prefixsuffix_includes = -I$(top_builddir)/src -I$(top_srcdir)/src -I$(top_builddir) -I$(top_srcdir)
+tests_cppflags = $(prefixsuffix_includes) $(DEPS_CFLAGS)
+tests_ldadd = $(DEPS_LIBS)
+
+tests_test_rename_strings_SOURCES = tests/test_rename_strings.cc \
+	src/string_renamer.cc \
+	src/string_renamer.h
 tests_test_rename_strings_LDADD = $(tests_ldadd)
 tests_test_rename_strings_CPPFLAGS = $(tests_cppflags)
 

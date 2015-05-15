@@ -16,13 +16,57 @@
  * USA
  */
 
+#include "string_renamer.h"
 #include <iostream>
 #include <cstdlib>
 
+bool check_prefix()
+{
+  const PrefixSuffix::StringRenamer renamer("oldprefix", "newprefix", "", "");
+  Glib::ustring renamed = renamer.get_new_basename("oldprefixabc");
+  if(renamed != "newprefixabc")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  renamed = renamer.get_new_basename("aoldprefixabc");
+  if(renamed != "aoldprefixabc")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool check_suffix()
+{
+  const PrefixSuffix::StringRenamer renamer("", "", "oldsuffix", "newsuffix");
+  Glib::ustring renamed = renamer.get_new_basename("abcoldsuffix");
+  if(renamed != "abcnewsuffix")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  renamed = renamer.get_new_basename("abcoldsuffixa");
+  if(renamed != "abcoldsuffixa")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 int main()
 {
-  if(true)
-    return EXIT_SUCCESS;
-  else
+  if(!check_prefix())
     return EXIT_FAILURE;
+
+  if(!check_suffix())
+    return EXIT_FAILURE;
+
+  return EXIT_SUCCESS;
 }

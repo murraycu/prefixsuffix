@@ -50,7 +50,7 @@ Glib::ustring StringRenamer::get_new_basename(const Glib::ustring& basename) con
     {
       //If the old prefix is there:
       Glib::ustring::size_type posPrefix = basename.find(m_prefix_replace);
-      if(posPrefix != Glib::ustring::npos)
+      if(posPrefix == 0)
       {
         //Remove old prefix:
         filename_new = basename.substr(m_prefix_replace.size());

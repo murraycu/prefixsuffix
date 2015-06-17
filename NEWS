@@ -1,3 +1,14 @@
+0.6.4:
+
+* Correct prefix renaming.
+  https://github.com/murraycu/prefixsuffix/issues/5
+  (Murray Cumming)
+* Move buttons to the header bar, to match the GNOME 3 design style.
+  (Juan R. García Blanco)
+* Added French translation.
+  https://github.com/murraycu/prefixsuffix/pull/4
+  (Okki)
+
 0.6.3:
 
 * Make the Stop button actually work.

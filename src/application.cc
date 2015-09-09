@@ -164,6 +164,8 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& 
     std::cout << msg << std::endl;
 
     m_stop_without_window = true;
+
+    //A non-negative result means stop the program:
     return EXIT_SUCCESS;
   }
 
@@ -171,7 +173,8 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& 
   //so they won't be passed to the primary (remote) instance:
   options->remove("version");
 
-  return 0;
+  //A negative result means continue.
+  return -1;
 }
 
 } //namespace PrefixSuffix

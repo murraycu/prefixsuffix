@@ -78,7 +78,7 @@ Glib::ustring StringRenamer::get_new_basename(const Glib::ustring& basename) con
     //If the old suffix is there:
     if(!m_suffix_replace.empty()) //if an old suffix was specified
     {
-      Glib::ustring::size_type posSuffix = basename.rfind(m_suffix_replace);
+      const Glib::ustring::size_type posSuffix = basename.rfind(m_suffix_replace);
       if(posSuffix != Glib::ustring::npos && ((basename.size() - posSuffix) == m_suffix_replace.size())) //if it was found, and if these were the last characters in the string.
       {
         //Remove old suffix:

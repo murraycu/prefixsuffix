@@ -30,8 +30,8 @@ StringRenamer::StringRenamer(
     m_prefix_with(prefix_with),
     m_suffix_replace(suffix_replace),
     m_suffix_with(suffix_with),
-    m_prefix(!prefix_replace.empty() && !prefix_with.empty()),
-    m_suffix(!suffix_replace.empty() && !suffix_with.empty())
+    m_prefix(!prefix_replace.empty() || !prefix_with.empty()),
+    m_suffix(!suffix_replace.empty() || !suffix_with.empty())
 {
 }
 

@@ -90,12 +90,35 @@ bool check_extension_suffix()
   return true;
 }
 
+bool check_suffix_remove()
+{
+  const PrefixSuffix::StringRenamer renamer("", "", "suffixtoremove", "");
+  Glib::ustring renamed = renamer.get_new_basename("abcsuffixtoremove");
+  if(renamed != "abc")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  renamed = renamer.get_new_basename("abcsuffixtoremovea");
+  if(renamed != "abcsuffixtoremovea")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 int main()
 {
   if(!check_prefix())
     return EXIT_FAILURE;
 
   if(!check_suffix())
+    return EXIT_FAILURE;
+
+  if(!check_suffix_remove())
     return EXIT_FAILURE;
 
   if(!check_extension_suffix())

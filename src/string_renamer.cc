@@ -103,6 +103,17 @@ Glib::ustring StringRenamer::get_new_basename(const Glib::ustring& basename) con
   return filename_new;
 }
 
+void StringRenamer::debug_cout() const
+{
+  std::cout << G_STRFUNC << ":" << std::endl
+    << "  m_prefix: " << m_prefix << std::endl
+    << "  m_suffix: " << m_suffix << std::endl
+    << "  m_prefix_replace: " << m_prefix_replace << std::endl
+    << "  m_prefix_with: " << m_prefix_with << std::endl
+    << "  m_suffix_replace: " << m_suffix_replace << std::endl
+    << "  m_suffix_with: " << m_suffix_with << std::endl;
+}
+
 } //namespace PrefixSuffix
 
 

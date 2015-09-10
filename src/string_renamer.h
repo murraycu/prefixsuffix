@@ -34,6 +34,8 @@ public:
 
   Glib::ustring get_new_basename(const Glib::ustring& filepath) const;
 
+  void debug_cout() const;
+
   const Glib::ustring m_prefix_replace, m_prefix_with;
   const Glib::ustring m_suffix_replace, m_suffix_with;
 

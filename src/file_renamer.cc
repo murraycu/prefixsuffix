@@ -232,7 +232,8 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
           const Glib::ustring& basename_new = m_string_renamer.get_new_basename(basename);
           if(basename_new.empty())
           {
-            std::cerr << G_STRFUNC << ": m_string_renamer.get_new_basename(" << basename << ") return an empty string." << std::endl;
+            std::cerr << G_STRFUNC << ": m_string_renamer.get_new_basename(" << basename << ") returned an empty string." << std::endl;
+            m_string_renamer.debug_cout();
             stop_process(_("PrefixSuffix failed while building the new filename."));
             continue;
           }

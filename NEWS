@@ -1,3 +1,11 @@
+0.6.5:
+
+* Several fixes for serious problems with string matching when renaming files.
+  (Murray Cumming)
+* Adapt to GApplication handle_local_options() fix in glib 2.45.5,
+  which caused prefixsuffix to never show the main window.
+  (Murray Cumming)
+
 0.6.4:
 
 * Correct prefix renaming.

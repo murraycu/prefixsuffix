@@ -196,6 +196,13 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
       bool use = true;
 
       const std::string basename = child->get_basename();
+      if(basename.empty())
+      {
+        std::cerr << G_STRFUNC << ": child->get_basename() return an empty string." << std::endl;
+        stop_process(_("PrefixSuffix failed while obtaining the list of files."));
+        continue;
+      }
+
       //Ignore any non-file filenames:
       if( (basename == "..") || (basename == ".") || basename.empty() )
       {
@@ -223,6 +230,13 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
           list_folders.push_back(uri);
         } else {
           const Glib::ustring& basename_new = m_string_renamer.get_new_basename(basename);
+          if(basename_new.empty())
+          {
+            std::cerr << G_STRFUNC << ": m_string_renamer.get_new_basename(" << basename << ") return an empty string." << std::endl;
+            stop_process(_("PrefixSuffix failed while building the new filename."));
+            continue;
+          }
+
           if(basename_new != basename) //Ignore it if the prefix/suffix change had no effect
           {
             m_files.push(uri);

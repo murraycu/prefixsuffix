@@ -60,12 +60,45 @@ bool check_suffix()
   return true;
 }
 
+bool check_extension_suffix()
+{
+  //Check that it doesn't change when it shouldn't:
+  const PrefixSuffix::StringRenamer renamer("", "", ".jpg", ".png");
+  Glib::ustring renamed = renamer.get_new_basename("something");
+  if(renamed != "something")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  //Check that it doesn't change when it shouldn't, again:
+  renamed = renamer.get_new_basename("something.foo");
+  if(renamed != "something.foo")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  //Check that it does change when it should:
+  renamed = renamer.get_new_basename("something.jpg");
+  if(renamed != "something.png")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 int main()
 {
   if(!check_prefix())
     return EXIT_FAILURE;
 
   if(!check_suffix())
+    return EXIT_FAILURE;
+
+  if(!check_extension_suffix())
     return EXIT_FAILURE;
 
   return EXIT_SUCCESS;

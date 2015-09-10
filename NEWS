@@ -1,3 +1,8 @@
+0.6.6:
+
+* Don't ignore the suffix if the unselected prefix options contain text.
+  (Murray Cumming)
+
 0.6.5:
 
 * Several fixes for serious problems with string matching when renaming files.

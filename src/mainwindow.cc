@@ -191,9 +191,23 @@ void MainWindow::do_rename()
     return;
   }
 
+  //FileRenamer is capable of replacing prefixes and suffixes at
+  //the same time, but we don't want that,
+  //so we pass only one set of prefix/suffix strings to FileRenamer:
+  Glib::ustring prefix_replace, prefix_with, suffix_replace, suffix_with;
+  if(m_radio_prefix->get_active())
+  {
+    prefix_replace = m_entry_prefix_replace->get_text();
+    prefix_with = m_entry_prefix_with->get_text();
+  } else if(m_radio_suffix->get_active())
+  {
+    suffix_replace = m_entry_suffix_replace->get_text();
+    suffix_with = m_entry_suffix_with->get_text();
+  }
+
   m_renamer = new FileRenamer(uri,
-  m_entry_prefix_replace->get_text(), m_entry_prefix_with->get_text(),
-  m_entry_suffix_replace->get_text(), m_entry_suffix_with->get_text(),
+  prefix_replace, prefix_with,
+  suffix_replace, suffix_with,
   m_check_recurse->get_active(), m_check_folders->get_active(),
   m_check_hidden->get_active());
 

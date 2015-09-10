@@ -192,10 +192,10 @@ void MainWindow::do_rename()
   }
 
   m_renamer = new FileRenamer(uri,
-   m_entry_prefix_replace->get_text(), m_entry_prefix_with->get_text(),
-   m_entry_suffix_replace->get_text(), m_entry_suffix_with->get_text(),
-   m_check_recurse->get_active(), m_check_folders->get_active(),
-   m_check_hidden->get_active());
+  m_entry_prefix_replace->get_text(), m_entry_prefix_with->get_text(),
+  m_entry_suffix_replace->get_text(), m_entry_suffix_with->get_text(),
+  m_check_recurse->get_active(), m_check_folders->get_active(),
+  m_check_hidden->get_active());
 
   //We have enough to start processing:
   //Bakery::BusyCursor busyCursor(*this);

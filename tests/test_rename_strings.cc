@@ -40,6 +40,26 @@ bool check_prefix()
   return true;
 }
 
+bool check_prefix_remove()
+{
+  const PrefixSuffix::StringRenamer renamer("oldprefix", "", "", "");
+  Glib::ustring renamed = renamer.get_new_basename("oldprefixabc");
+  if(renamed != "abc")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  renamed = renamer.get_new_basename("aoldprefixabc");
+  if(renamed != "aoldprefixabc")
+  {
+    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 bool check_suffix()
 {
   const PrefixSuffix::StringRenamer renamer("", "", "oldsuffix", "newsuffix");
@@ -113,6 +133,9 @@ bool check_suffix_remove()
 int main()
 {
   if(!check_prefix())
+    return EXIT_FAILURE;
+
+  if(!check_prefix_remove())
     return EXIT_FAILURE;
 
   if(!check_suffix())

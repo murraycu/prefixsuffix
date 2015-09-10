@@ -80,6 +80,7 @@ void FileRenamer::on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& resu
   catch(const Glib::Error& ex)
   {
     std::cerr << G_STRFUNC << ": Exception from Gio::File::set_display_name_finish(): " << ex.what() << std::endl;
+    std::cerr << "  file->get_path() = " << file->get_path() << std::endl;
     stop_process(_("PrefixSuffix failed while renaming the files."));
     return;
   }

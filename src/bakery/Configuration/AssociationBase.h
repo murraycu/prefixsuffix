@@ -57,6 +57,7 @@ protected:
   typedef sigc::slot<void> Callback;
   virtual void connect_widget(Callback on_widget_changed) = 0;
 
+private:
   virtual void load_widget() = 0;
   virtual void save_widget() = 0;
 

@@ -72,9 +72,9 @@ public:
    * specialization of Association<T> to provide appropriate
    * behaviors based on the widget type.
    */
-  virtual void connect_widget(Callback on_widget_changed);
-  virtual void load_widget();
-  virtual void save_widget();
+  void connect_widget(Callback on_widget_changed) override;
+  void load_widget() override;
+  void save_widget() override;
   
 protected:
   Association(const Glib::ustring& full_key, T_Widget& widget, bool instant)
@@ -95,19 +95,19 @@ class Association<Gtk::SpinButton>  : public AssociationCreation<Gtk::SpinButton
 public:
   typedef Gtk::SpinButton type_widget;
   
-  void connect_widget(Callback widget_changed)
+  void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_value_changed().connect(widget_changed);
   }
 
-  void load_widget()
+  void load_widget() override
   {
     double val = get_conf_client()->get_double(get_key());
       if (m_widget.get_value() != val)
         m_widget.set_value(val);
   }
 
-  void save_widget()
+  void save_widget() override
   {
     double val = m_widget.get_value();
     double existing_val = get_conf_client()->get_double(get_key());
@@ -130,12 +130,12 @@ class Association<Gtk::Entry>  : public AssociationCreation<Gtk::Entry>
 public:
   typedef Gtk::Entry type_widget;
   
-  void connect_widget(Callback widget_changed)
+  void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_changed().connect(widget_changed);
   }
 
-  void load_widget()
+  void load_widget() override
   {
     // Only set it if it has changed (avoids excess notifications).
     Glib::ustring val = get_conf_client()->get_string(get_key());
@@ -143,7 +143,7 @@ public:
       m_widget.set_text(val);
   }
 
-  void save_widget()
+  void save_widget() override
   {
     // Only set it if it has changed (avoids excess notifications).
     Glib::ustring val = m_widget.get_text();
@@ -168,12 +168,12 @@ class Association<Gtk::ToggleButton>  : public AssociationCreation<Gtk::ToggleBu
 public:
   typedef Gtk::ToggleButton type_widget;
   
-  void connect_widget(Callback widget_changed)
+  void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_toggled().connect(widget_changed);
   }
 
-  void load_widget()
+  void load_widget() override
   {
     // Only set it if it has changed (avoids excess notifications).
     bool val = get_conf_client()->get_boolean(get_key());
@@ -181,7 +181,7 @@ public:
       m_widget.set_active(val);
   }
 
-  void save_widget()
+  void save_widget() override
   {
     // Only set it if it has changed (avoids excess notifications).
     bool val = m_widget.get_active();

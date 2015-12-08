@@ -227,7 +227,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
 
           //Add to list of folders, so we can recurse into them,
           //and maybe rename them:
-          list_folders.push_back(uri);
+          list_folders.emplace_back(uri);
         } else {
           const Glib::ustring& basename_new = m_string_renamer.get_new_basename(basename);
           if(basename_new.empty())

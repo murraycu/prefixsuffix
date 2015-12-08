@@ -76,7 +76,7 @@ protected:
   void add_association(const Glib::ustring& key, T_Widget& widget, bool instant)
   {
     auto assoc = Association<T_Widget>::create(key, widget, instant);
-    m_vecWidgets.push_back(assoc);
+    m_vecWidgets.emplace_back(assoc);
     assoc->add(m_refClient);
   }
 

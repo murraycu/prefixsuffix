@@ -53,12 +53,12 @@ public:
   Client(const Glib::ustring& schema_id);
   virtual ~Client();
 
-  virtual void load();
-  virtual void save();
+  void load();
+  void save();
 
   /// e.g. conf_client.add("user_name", m_EntryUserName);
-  virtual void add(const Glib::ustring& key, Gtk::Widget& widget);
-  virtual void add_instant(const Glib::ustring& key, Gtk::Widget& widget);
+  void add(const Glib::ustring& key, Gtk::Widget& widget);
+  void add_instant(const Glib::ustring& key, Gtk::Widget& widget);
 
 protected:
 

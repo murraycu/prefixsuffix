@@ -1,3 +1,7 @@
+0.6.9:
+
+* Correct the GSettings schema ID.
+
 0.6.8:
 
 * Change the GApplication application ID again.

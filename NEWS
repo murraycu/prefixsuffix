@@ -1,3 +1,7 @@
+0.6.7:
+
+* Change the GApplication application ID.
+
 0.6.6:
 
 * Don't ignore the suffix if the unselected prefix options contain text.

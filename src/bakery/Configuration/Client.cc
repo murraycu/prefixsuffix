@@ -28,10 +28,10 @@ namespace Bakery
 namespace Conf
 {
 
-Client::Client(const Glib::ustring& configuration_directory)
-: m_directory(configuration_directory)
+Client::Client(const Glib::ustring& schema_id)
+: m_schema_id(schema_id)
 {
-  m_refClient = Gio::Settings::create(m_directory);
+  m_refClient = Gio::Settings::create(m_schema_id);
 }
 
 Client::~Client()

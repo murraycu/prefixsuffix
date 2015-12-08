@@ -50,7 +50,7 @@ namespace Conf
 class Client : public sigc::trackable
 {
 public:
-  Client(const Glib::ustring& configuration_directory);
+  Client(const Glib::ustring& schema_id);
   virtual ~Client();
 
   virtual void load();
@@ -84,7 +84,7 @@ protected:
 
 private:
   Glib::RefPtr<Gio::Settings> m_refClient;
-  Glib::ustring m_directory;
+  Glib::ustring m_schema_id;
 
   typedef std::vector<AssociationPtr> type_vecWidgets;
   type_vecWidgets m_vecWidgets;

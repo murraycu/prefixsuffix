@@ -1,7 +1,7 @@
 *** Create the xdg-app package like so:
 
-$ xdg-app-builder --require-changes app manifest.json
-$ xdg-app build-export --gpg-sign="murrayc@murrayc.com" /repos/prefixsuffix app
+$ xdg-app-builder --require-changes ../prefixsuffix-xdgapp manifest.json
+$ xdg-app build-export --gpg-sign="murrayc@murrayc.com" /repos/prefixsuffix ../prefixsuffix-xdgapp
 $ xdg-app repo-update /repos/prefixsuffix
 
 Then copy all of /repos/prefixsuffix/* into the repos/ directory that appears

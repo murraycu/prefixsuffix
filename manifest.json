@@ -7,7 +7,6 @@
     "command": "prefixsuffix",
     "rename-desktop-file": "prefixsuffix.desktop",
     "finish-args": ["--share=ipc", "--socket=x11", "--socket=pulseaudio", "--filesystem=host" ],
-    "desktop-file-name-prefix": "(Nightly) ",
     "build-options" : {
         "cflags": "-O2 -g",
         "cxxflags": "-O2 -g",

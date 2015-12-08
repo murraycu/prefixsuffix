@@ -89,8 +89,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "http://ftp.gnome.org/pub/GNOME/sources/prefixsuffix/0.6/prefixsuffix-0.6.8.tar.xz",
-                    "sha256": "4ffdd3c8bfb6f94bdf0cb7e47bc4cb485759a149f59fdfe2dff1a66d7412ff6f"
+                    "url": "http://ftp.gnome.org/pub/GNOME/sources/prefixsuffix/0.6/prefixsuffix-0.6.9.tar.xz",
+                    "sha256": "fc3202bddf2ebbb93ffd31fc2a079cfc05957e4bf219535f26e6d8784d859e9b"
                 }
             ]
         }

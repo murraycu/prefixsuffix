@@ -31,8 +31,7 @@ prefixsuffix_SOURCES = \
 	src/bakery/Configuration/AssociationBase.h \
 	src/bakery/Configuration/AssociationBase.cc \
 	src/bakery/Configuration/Client.h \
-	src/bakery/Configuration/Client.cc \
-	src/bakery/Utilities/sharedptr.h
+	src/bakery/Configuration/Client.cc
 	
 EXTRA_DIST = \
 	data/prefixsuffix-logo.png \

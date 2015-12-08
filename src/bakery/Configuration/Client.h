@@ -69,15 +69,13 @@ protected:
    */
   virtual void add_implementation(const Glib::ustring& key, Gtk::Widget& widget, bool instant);
 
-  typedef Bakery::Conf::AssociationBase::AssociationPtr AssociationPtr;
-
 public:
 
 protected:
   template< class T_Widget >
   void add_association(const Glib::ustring& key, T_Widget& widget, bool instant)
   {
-    AssociationPtr assoc = Association<T_Widget>::create(key, widget, instant);
+    auto assoc = Association<T_Widget>::create(key, widget, instant);
     m_vecWidgets.push_back(assoc);
     assoc->add(m_refClient);
   }
@@ -86,7 +84,7 @@ private:
   Glib::RefPtr<Gio::Settings> m_refClient;
   Glib::ustring m_schema_id;
 
-  typedef std::vector<AssociationPtr> type_vecWidgets;
+  typedef std::vector<std::shared_ptr<AssociationBase>> type_vecWidgets;
   type_vecWidgets m_vecWidgets;
 };
 

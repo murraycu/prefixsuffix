@@ -21,7 +21,6 @@
 
 #include <gtkmm/widget.h>
 #include <giomm/settings.h>
-#include "bakery/Utilities/sharedptr.h"
 
 namespace Bakery
 {
@@ -34,9 +33,6 @@ namespace Conf
 class AssociationBase : public sigc::trackable
 {
 public:
-  typedef sharedptr<AssociationBase> AssociationPtr;
-  typedef sharedptr<const AssociationBase> AssociationConstPtr;
-    
   void add(const Glib::RefPtr<Gio::Settings>& conf_client);
 
   void load();

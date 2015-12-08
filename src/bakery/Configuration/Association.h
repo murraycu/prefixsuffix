@@ -24,6 +24,7 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/range.h>
 #include <gtkmm/spinbutton.h>
+#include <memory>
 
 namespace Bakery
 {
@@ -37,9 +38,9 @@ template< class T_Widget >
 class AssociationCreation : public AssociationBase
 {
 public:
-  static const AssociationPtr create(const Glib::ustring& full_key, T_Widget& widget, bool instant)
+  static std::shared_ptr<AssociationBase> create(const Glib::ustring& full_key, T_Widget& widget, bool instant)
   {
-    return AssociationPtr( new Association<T_Widget>(full_key, widget, instant) );
+    return std::make_shared<Association<T_Widget>>(full_key, widget, instant);
   }
 
   virtual ~AssociationCreation()

@@ -4,5 +4,5 @@ src/mainwindow.cc
 src/file_renamer.cc
 data/prefixsuffix.desktop.in.in
 data/prefixsuffix.glade
-data/org.gnome.prefixsuffix.gschema.xml.in
+data/io.github.murraycu.PrefixSuffix.gschema.xml.in
 

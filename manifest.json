@@ -1,5 +1,5 @@
 {
-    "app-id": "org.gnome.PrefixSuffix",
+    "app-id": "io.github.murraycu.PrefixSuffix",
     "version": "master",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.18",

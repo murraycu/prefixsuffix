@@ -33,11 +33,11 @@
 namespace PrefixSuffix
 {
 
-// The application ID here must be the same as:
+// The application ID here must be the same as
 // - the app-id in the xdg-app's manifest.json file.
 // - the schema ID in the .gschema.xml.in file (probably)
 Application::Application()
-: Gtk::Application("org.gnome.prefixsuffix",
+: Gtk::Application("io.github.murraycu.PrefixSuffix",
     Gio::APPLICATION_HANDLES_COMMAND_LINE),
   m_window(0),
   m_stop_without_window(0)

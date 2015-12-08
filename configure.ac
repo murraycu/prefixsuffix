@@ -42,7 +42,7 @@ GLIB_GSETTINGS
 AC_CONFIG_FILES([Makefile
                  po/Makefile.in
                  data/prefixsuffix.desktop.in
-                 data/org.gnome.prefixsuffix.gschema.xml
+                 data/io.github.murraycu.PrefixSuffix.gschema.xml
                  help/Makefile
                  help/C/Makefile
                  docs/Makefile])

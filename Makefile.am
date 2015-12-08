@@ -59,9 +59,9 @@ icondir = $(datadir)/pixmaps
 icon_DATA = prefixsuffix.png
 
 # GSettings schemas, enum files and conversion file
-#gsettings_ENUM_NAMESPACE = org.gnome.prefixsuffix
+#gsettings_ENUM_NAMESPACE = io.github.murraycu.prefixsuffix
 #gsettings_ENUM_FILES = $(top_srcdir)/src/*.h $(top_srcdir)/src/backend/*.h
-gsettings_SCHEMAS = data/org.gnome.prefixsuffix.gschema.xml
+gsettings_SCHEMAS = data/io.github.murraycu.PrefixSuffix.gschema.xml
 @GSETTINGS_RULES@
 
 EXTRA_DIST += $(desktop_DATA) $(icon_DATA) \

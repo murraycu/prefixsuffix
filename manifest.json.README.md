@@ -18,8 +18,8 @@ https://github.com/murraycu/prefixsuffix/tree/gh-pages/keys
 
 $ wget https://murraycu.github.io/prefixsuffix/keys/prefixsuffix.gpg
 $ xdg-app add-remote --user --gpg-import=prefixsuffix.gpg prefixsuffix https://murraycu.github.io/prefixsuffix/repo/
-$ xdg-app install-app --user prefixsuffix org.gnome.PrefixSuffix
+$ xdg-app install-app --user prefixsuffix io.github.murraycu.PrefixSuffix
 
 ** Run the xdg-app like so:
-$ xdg-app run org.gnome.PrefixSuffix
+$ xdg-app run io.github.murraycu.PrefixSuffix
 

@@ -29,7 +29,7 @@ namespace PrefixSuffix
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject),
-    m_conf_client("org.gnome.prefixsuffix"),
+    m_conf_client(PREFIXSUFFIX_APP_ID),
     m_renamer(0)
 {
   set_title(_("PrefixSuffix"));

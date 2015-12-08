@@ -37,7 +37,7 @@ namespace PrefixSuffix
 // - the app-id in the xdg-app's manifest.json file.
 // - the schema ID in the .gschema.xml.in file (probably)
 Application::Application()
-: Gtk::Application("io.github.murraycu.PrefixSuffix",
+: Gtk::Application(PREFIXSUFFIX_APP_ID,
     Gio::APPLICATION_HANDLES_COMMAND_LINE),
   m_window(0),
   m_stop_without_window(0)

@@ -44,7 +44,9 @@ gladedir = $(datadir)/prefixsuffix/glade/
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
 	-I$(top_builddir) -I$(top_srcdir) \
-	-DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\"
+	-DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\" \
+  -DPREFIXSUFFIX_APP_ID=\"io.github.murraycu.PrefixSuffix\"
+
 prefixsuffix_LDADD = $(DEPS_LIBS)
 
 

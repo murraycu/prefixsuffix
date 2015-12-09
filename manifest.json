@@ -17,6 +17,17 @@
     "cleanup": ["/include", "/lib/*/include", "/lib/pkgconfig", "/share/pkgconfig", "/share/aclocal", "/man", "/share/man", "/share/info", "/share/gtk-doc", "*.la", "*.a"],
     "modules": [
         {
+           "name": "mm-common",
+           "cleanup": [ "/" ],
+           "sources": [
+               {
+                   "type": "archive",
+                   "url": "http://ftp.gnome.org/pub/GNOME/sources/mm-common/0.9/mm-common-0.9.9.tar.xz",
+                   "sha256": "9d00bc77e77794e0bd2ae68132c4b4136aa115d255e34b310f7449b29db50b7a"
+               }
+           ]
+        },
+        {
             "name": "sigc++",
             "config-opts": [ "--disable-documentation" ],
             "sources": [

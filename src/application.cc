@@ -95,13 +95,6 @@ void Application::create_window()
     std::cerr << G_STRFUNC << ": Exception of unexpected type: " << ex.what() << std::endl;
   }
 
-  if(!builder)
-  {
-    //Try the local directory. Maybe somebody is just running this without installing it:
-    g_warning("Prefix: Failed to find installed glade file. Looking for it in the current directory.\n");
-    builder = Gtk::Builder::create_from_file("prefixsuffix.glade");
-  }
-
   //If it still can't be found:
   if(!builder)
     g_warning("PrefixSuffix: Could not find prefixsuffix.glade.\n");

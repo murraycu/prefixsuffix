@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/io/github/murraycu/PrefixSuffix">
+    <file preprocess="xml-stripblanks">data/prefixsuffix.glade</file>
+
+    <file>data/prefixsuffix-logo.png</file>
+  </gresource>
+</gresources>
+
+
+
+
+ 
+
+

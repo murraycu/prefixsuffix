@@ -31,19 +31,22 @@ prefixsuffix_SOURCES = \
 	src/bakery/Configuration/AssociationBase.h \
 	src/bakery/Configuration/AssociationBase.cc \
 	src/bakery/Configuration/Client.h \
-	src/bakery/Configuration/Client.cc
-	
+	src/bakery/Configuration/Client.cc \
+	data/prefixsuffix-resources.c
+
 EXTRA_DIST = \
 	data/prefixsuffix-logo.png \
 	data/prefixsuffix.glade
 
 gladedir = $(datadir)/prefixsuffix/glade/
 
-# Let the code know where the glade dir is:
+prefixsuffix_CFLAGS = $(DEPS_CFLAGS) \
+	-I$(top_builddir)/src -I$(top_srcdir)/src \
+	-I$(top_builddir) -I$(top_srcdir)
+
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
 	-I$(top_builddir) -I$(top_srcdir) \
-	-DPREFIXSUFFIX_GLADEDIR=\""$(gladedir)/"\" \
   -DPREFIXSUFFIX_APP_ID=\"io.github.murraycu.PrefixSuffix\"
 
 prefixsuffix_LDADD = $(DEPS_LIBS)
@@ -65,15 +68,21 @@ icon_DATA = prefixsuffix.png
 gsettings_SCHEMAS = data/io.github.murraycu.PrefixSuffix.gschema.xml
 @GSETTINGS_RULES@
 
-EXTRA_DIST += $(desktop_DATA) $(icon_DATA) \
+
+# Generate the GResource source file for .glade and icons files:
+prefixsuffix_resource_file = $(srcdir)/data/prefixsuffix.gresource.xml
+BUILT_SOURCES = data/prefixsuffix-resources.c
+data/prefixsuffix-resources.c: $(prefixsuffix_resource_file) $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(prefixsuffix_resource_file))
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --internal --target=$@ --sourcedir=$(srcdir) --generate-source $(prefixsuffix_resource_file)
+
+
+EXTRA_DIST += $(prefixsuffix_resource_file) \
+            $(desktop_DATA) $(icon_DATA) \
              intltool-extract.in intltool-merge.in intltool-update.in
 
 
-# Install the glade file:
-# The glade prefix of glade_DATA seems to cause it to be installed in <appname>/glade/
-# Because that's how gladedir is defined.
-glade_DATA = data/prefixsuffix.glade
-EXTRA_DIST += $(glade_DATA)
+EXTRA_DIST += data/prefixsuffix.glade \
+	$(prefixsuffix_resource_file) 
 
 CLEANFILES = \
 	$(desktop_DATA)

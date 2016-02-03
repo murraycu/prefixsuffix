@@ -55,6 +55,9 @@ Glib::RefPtr<Application> Application::create()
   return Glib::RefPtr<Application>( new Application() );
 }
 
+// This is the same prefix that is in the *gresource.xml.in file.
+#define PREFIXSUFFIX_GLADE_RESOURCE_PATH "/io/github/murraycu/PrefixSuffix/data/"
+
 void Application::create_window()
 {
   if(m_window)
@@ -69,7 +72,7 @@ void Application::create_window()
   //Look for the installed .glade file:
   try
   {
-    builder = Gtk::Builder::create_from_file(PREFIXSUFFIX_GLADEDIR "prefixsuffix.glade");
+    builder = Gtk::Builder::create_from_resource(PREFIXSUFFIX_GLADE_RESOURCE_PATH "prefixsuffix.glade");
   }
   catch(const Gtk::BuilderError& ex)
   {
@@ -81,7 +84,11 @@ void Application::create_window()
   }
   catch(const Glib::FileError& ex)
   {
-    std::cerr << G_STRFUNC << ": FileError: exception" << ex.what() << std::endl;
+    std::cerr << G_STRFUNC << ": FileError: exception: " << ex.what() << std::endl;
+  }
+  catch(const Gio::ResourceError& ex)
+  {
+    std::cerr << G_STRFUNC << ": Gio::ResourceError: exception: " << ex.what() << std::endl;
   }
   catch(const Glib::Error& ex)
   {

@@ -19,6 +19,7 @@
  */
 
 #include "mainwindow.h"
+#include "constants.h"
 #include <gtkmm/messagedialog.h>
 #include <glibmm/i18n.h>
 

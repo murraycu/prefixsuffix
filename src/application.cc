@@ -20,6 +20,7 @@
 
 #include "application.h"
 #include "mainwindow.h"
+#include "constants.h"
 #include <iostream>
 
 #include <glibmm/i18n.h>

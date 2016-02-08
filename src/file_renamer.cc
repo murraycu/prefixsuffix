@@ -258,11 +258,9 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
   request_next_files(directory, enumerator);
 
   // Examine the sub-directories:
-  for(type_list_strings::const_iterator iter = list_folders.begin(); iter != list_folders.end(); ++iter)
+  for(const auto& child_dir : list_folders)
   {
     //Recurse to get files in this folder.
-    const Glib::ustring child_dir = *iter;
-
     if(m_recurse_into_folders)
     {
       build_list_of_files(child_dir);

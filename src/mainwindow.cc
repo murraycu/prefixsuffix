@@ -28,7 +28,7 @@ namespace PrefixSuffix
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject),
     m_conf_client(PREFIXSUFFIX_APP_ID),
-    m_renamer(0)
+    m_renamer(nullptr)
 {
   set_title(_("PrefixSuffix"));
 
@@ -257,7 +257,7 @@ void MainWindow::on_renamer_progress(const double fraction)
 void MainWindow::on_renamer_stopped(const Glib::ustring& error_message)
 {
   delete m_renamer;
-  m_renamer = 0;
+  m_renamer = nullptr;
 
   stop_process(error_message);
 }
@@ -268,7 +268,7 @@ void MainWindow::stop_process(const Glib::ustring& error_message)
     m_renamer->stop();
 
     delete m_renamer;
-    m_renamer = 0;
+    m_renamer = nullptr;
   }
 
   if(!error_message.empty())

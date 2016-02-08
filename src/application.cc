@@ -37,7 +37,7 @@ namespace PrefixSuffix
 Application::Application()
 : Gtk::Application(PREFIXSUFFIX_APP_ID,
     Gio::APPLICATION_HANDLES_COMMAND_LINE),
-  m_window(0),
+  m_window(nullptr),
   m_stop_without_window(0)
 {
   Glib::set_application_name("PrefixSuffix");
@@ -112,7 +112,7 @@ void Application::create_window()
 void Application::on_window_hide()
 {
   delete m_window;
-  m_window = 0;
+  m_window = nullptr;
 }
 
 void Application::on_activate()

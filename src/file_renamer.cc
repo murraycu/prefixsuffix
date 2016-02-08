@@ -173,7 +173,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
     //If we have finished enumerating this directory:
     if(list_info.empty())
     {
-      type_set_files::iterator iter = m_directory_enumerations_in_progress.find(directory);
+      auto iter = m_directory_enumerations_in_progress.find(directory);
       if(iter != m_directory_enumerations_in_progress.end())
         m_directory_enumerations_in_progress.erase(iter);
 

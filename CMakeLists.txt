@@ -1,39 +1,21 @@
 cmake_minimum_required(VERSION 3.2)
-project(prefixsuffix)
+project ("prefixsuffix")
 
 set(PACKAGE_VERSION "0.6.9")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+include(FindPkgConfig)
+pkg_check_modules(DEPS REQUIRED gtkmm-3.0)
 
 configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/data/prefixsuffix.glade
         ${CMAKE_CURRENT_BINARY_DIR}/data/prefixsuffix.glade
         COPYONLY)
 
-
-include(FindPkgConfig)
-pkg_check_modules(DEPS REQUIRED gtkmm-3.0)
-
-
-# Include custom functions
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/gresource.cmake")
-
-find_package (gresources REQUIRED)
-
-gresource (
-	"${CMAKE_CURRENT_SOURCE_DIR}/data/" # resource dir
-	"prefixsuffix.gresource.xml" # resource file
-	"${CMAKE_CURRENT_BINARY_DIR}/src" # output dir
-	generated_resource
-)
-
-set (generated_resources ${generated_resource})
-
-
 include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_BINARY_DIR}/src
         ${DEPS_INCLUDE_DIRS})
 link_directories(${DEPS_LIBRARY_DIRS})
 
@@ -41,17 +23,18 @@ configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
-find_program (gresources_executable glib-compile-resources)
 
-if (gresources_executable)
-  set (gresources_FOUND true)
-else ()
-  set (gresources_FOUND false)
-endif ()
+set (resource_dir ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set (resource_file ${resource_dir}/prefixsuffix.gresource.xml)
 
-if (gresources_FIND_REQUIRED)
-  message (FATAL_ERROR "glib-compile-resources not found")
-endif ()
+add_custom_command(
+    OUTPUT prefixsuffix-resources.c
+    MAIN_DEPENDENCY ${resource_file}
+    DEPENDS ${resource_dir}/prefixsuffix.glade
+
+    COMMAND glib-compile-resources --internal --target=prefixsuffix-resources.c --sourcedir=${CMAKE_CURRENT_SOURCE_DIR} --generate-source ${resource_file}
+)
+
 
 set(SOURCE_FILES
     src/bakery/Configuration/Association.cc
@@ -68,8 +51,9 @@ set(SOURCE_FILES
     src/mainwindow.cc
     src/mainwindow.h
     src/string_renamer.cc
-    src/string_renamer.h constants.h
-    ${generated_resources})
+    src/string_renamer.h
+    src/constants.h
+    prefixsuffix-resources.c)
 
 add_executable(prefixsuffix ${SOURCE_FILES})
 

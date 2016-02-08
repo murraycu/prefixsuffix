@@ -18,14 +18,12 @@
 
 #include "bakery/Configuration/Client.h"
 
-namespace Bakery
-{
+namespace Bakery {
 
-namespace Conf
-{
+namespace Conf {
 
 Client::Client(const Glib::ustring& schema_id)
-: m_schema_id(schema_id)
+  : m_schema_id(schema_id)
 {
   m_refClient = Gio::Settings::create(m_schema_id);
 }
@@ -34,17 +32,21 @@ Client::~Client()
 {
 }
 
-void Client::add(const Glib::ustring& key, Gtk::Widget& widget)
+void
+Client::add(const Glib::ustring& key, Gtk::Widget& widget)
 {
   add_implementation(key, widget, false);
 }
 
-void Client::add_instant(const Glib::ustring& key, Gtk::Widget& widget)
+void
+Client::add_instant(const Glib::ustring& key, Gtk::Widget& widget)
 {
   add_implementation(key, widget, true);
 }
 
-void Client::add_implementation(const Glib::ustring& key, Gtk::Widget& widget, bool instant = false)
+void
+Client::add_implementation(
+  const Glib::ustring& key, Gtk::Widget& widget, bool instant = false)
 {
   if (dynamic_cast<Gtk::SpinButton*>(&widget))
     add_association(key, static_cast<Gtk::SpinButton&>(widget), instant);
@@ -54,29 +56,28 @@ void Client::add_implementation(const Glib::ustring& key, Gtk::Widget& widget, b
     add_association(key, static_cast<Gtk::ToggleButton&>(widget), instant);
   else if (dynamic_cast<Gtk::Range*>(&widget))
     add_association(key, static_cast<Gtk::Range&>(widget), instant);
-  // TODO: Support for connecting a Gtk::Curve widget to an array of floating point values
+  // TODO: Support for connecting a Gtk::Curve widget to an array of floating
+  // point values
 }
 
-void Client::load()
+void
+Client::load()
 {
-  for (const auto& elem : m_vecWidgets)
-  {
+  for (const auto& elem : m_vecWidgets) {
     if (elem)
       elem->load();
   }
 }
 
-void Client::save()
+void
+Client::save()
 {
-  for (const auto& elem : m_vecWidgets)
-  {
+  for (const auto& elem : m_vecWidgets) {
     if (elem)
       elem->save();
   }
 }
 
+} // namespace Conf
 
-} //namespace Conf
-
-} //namespace Bakery
-
+} // namespace Bakery

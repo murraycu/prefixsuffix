@@ -26,32 +26,29 @@
 #include <gtkmm/spinbutton.h>
 #include <memory>
 
-namespace Bakery
-{
-namespace Conf
-{
-  
-template< class T_Widget >
+namespace Bakery {
+namespace Conf {
+
+template <class T_Widget>
 class Association;
 
-template< class T_Widget >
+template <class T_Widget>
 class AssociationCreation : public AssociationBase
 {
 public:
-  static std::shared_ptr<AssociationBase> create(const Glib::ustring& full_key, T_Widget& widget, bool instant)
+  static std::shared_ptr<AssociationBase> create(
+    const Glib::ustring& full_key, T_Widget& widget, bool instant)
   {
     return std::make_shared<Association<T_Widget>>(full_key, widget, instant);
   }
 
-  virtual ~AssociationCreation()
-  {
-  }
+  virtual ~AssociationCreation() {}
 
-  
 protected:
-  AssociationCreation(const Glib::ustring& full_key, T_Widget& widget, bool instant)
-  : AssociationBase(full_key,instant),
-    m_widget(widget)
+  AssociationCreation(
+    const Glib::ustring& full_key, T_Widget& widget, bool instant)
+    : AssociationBase(full_key, instant)
+    , m_widget(widget)
   {
   }
 
@@ -60,27 +57,25 @@ protected:
   T_Widget& m_widget;
 };
 
-template< class T_Widget >
+template <class T_Widget>
 class Association : public AssociationCreation<T_Widget>
 {
 public:
-
-  //For some reason, the compiler can not use this if it is in the base class:
-  //typedef AssociationCreation<T_Widget>::Callback Callback;
+  // For some reason, the compiler can not use this if it is in the base class:
+  // typedef AssociationCreation<T_Widget>::Callback Callback;
   typedef sigc::slot<void> Callback;
-  
+
   /** These methods must be implemented explicitly for each
-   * specialization of Association<T> to provide appropriate
-   * behaviors based on the widget type.
-   */
+* specialization of Association<T> to provide appropriate
+* behaviors based on the widget type.
+*/
   void connect_widget(Callback on_widget_changed) override;
   void load_widget() override;
   void save_widget() override;
-  
+
 protected:
   Association(const Glib::ustring& full_key, T_Widget& widget, bool instant)
-  : AssociationCreation<T_Widget>(full_key, widget, instant)
-  {};
+    : AssociationCreation<T_Widget>(full_key, widget, instant){};
 };
 
 //----------------------------------------------------------------------
@@ -88,14 +83,14 @@ protected:
 // association behaviors that are specific to individual widget types.
 //----------------------------------------------------------------------
 
-//SpinButton specializatipn:
+// SpinButton specializatipn:
 
-template<>
-class Association<Gtk::SpinButton>  : public AssociationCreation<Gtk::SpinButton>
+template <>
+class Association<Gtk::SpinButton> : public AssociationCreation<Gtk::SpinButton>
 {
 public:
   typedef Gtk::SpinButton type_widget;
-  
+
   void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_value_changed().connect(widget_changed);
@@ -104,33 +99,30 @@ public:
   void load_widget() override
   {
     double val = get_conf_client()->get_double(get_key());
-      if (m_widget.get_value() != val)
-        m_widget.set_value(val);
+    if (m_widget.get_value() != val)
+      m_widget.set_value(val);
   }
 
   void save_widget() override
   {
     double val = m_widget.get_value();
     double existing_val = get_conf_client()->get_double(get_key());
-      if (existing_val != val)
-        get_conf_client()->set_double(get_key(), val);
+    if (existing_val != val)
+      get_conf_client()->set_double(get_key(), val);
   }
-  
- 
+
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-  : AssociationCreation<type_widget>(full_key, widget, instant)
-  {};
+    : AssociationCreation<type_widget>(full_key, widget, instant){};
 };
 
+// Gtk::Entry specializatipn:
 
-//Gtk::Entry specializatipn:
-
-template<>
-class Association<Gtk::Entry>  : public AssociationCreation<Gtk::Entry>
+template <>
+class Association<Gtk::Entry> : public AssociationCreation<Gtk::Entry>
 {
 public:
   typedef Gtk::Entry type_widget;
-  
+
   void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_changed().connect(widget_changed);
@@ -154,21 +146,20 @@ public:
         get_conf_client()->set_string(get_key(), val);
     }
   }
-  
+
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-  : AssociationCreation<type_widget>(full_key, widget, instant)
-  {};
+    : AssociationCreation<type_widget>(full_key, widget, instant){};
 };
 
+// Gtk::ToggleButton specializatipn:
 
-//Gtk::ToggleButton specializatipn:
-
-template<>
-class Association<Gtk::ToggleButton>  : public AssociationCreation<Gtk::ToggleButton>
+template <>
+class Association<Gtk::ToggleButton>
+  : public AssociationCreation<Gtk::ToggleButton>
 {
 public:
   typedef Gtk::ToggleButton type_widget;
-  
+
   void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_toggled().connect(widget_changed);
@@ -190,21 +181,19 @@ public:
     if (existing_val != val)
       get_conf_client()->set_boolean(get_key(), val);
   }
-  
+
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-  : AssociationCreation<type_widget>(full_key, widget, instant)
-  {};
+    : AssociationCreation<type_widget>(full_key, widget, instant){};
 };
 
+// Gtk::Range specializatipn:
 
-//Gtk::Range specializatipn:
-
-template<>
-class Association<Gtk::Range>  : public AssociationCreation<Gtk::Range>
+template <>
+class Association<Gtk::Range> : public AssociationCreation<Gtk::Range>
 {
 public:
   typedef Gtk::Range type_widget;
-  
+
   void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_value_changed().connect(widget_changed);
@@ -226,14 +215,11 @@ public:
   }
 
   Association(const Glib::ustring& full_key, type_widget& widget, bool instant)
-  : AssociationCreation<type_widget>(full_key, widget, instant)
-  {};
+    : AssociationCreation<type_widget>(full_key, widget, instant){};
 };
 
+} // namespace Conf
 
+} // namespace Bakery
 
-} //namespace Conf
-
-} //namespace Bakery
-
-#endif //BAKERY_CONFIGURATION_ASSOCIATION_H
+#endif // BAKERY_CONFIGURATION_ASSOCIATION_H

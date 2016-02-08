@@ -2,8 +2,8 @@
  *
  * Copyright (C) 2002-2015 The PrefixSuffix Development Team
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
@@ -25,17 +25,16 @@
 #include "bakery/Configuration/Client.h"
 #include "file_renamer.h"
 
-namespace PrefixSuffix
-{
+namespace PrefixSuffix {
 
 class MainWindow : public Gtk::Window
 {
 public:
-  MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+  MainWindow(
+    BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   virtual ~MainWindow();
 
 private:
-
   // Signal Handlers:
   void on_radio_prefix_clicked();
   void on_radio_suffix_clicked();
@@ -61,7 +60,7 @@ protected:
 
   // Widgets
 
-  //From Glade file:
+  // From Glade file:
   Gtk::Widget* m_grid_inputs;
   Gtk::RadioButton* m_radio_prefix;
   Gtk::RadioButton* m_radio_suffix;
@@ -79,12 +78,12 @@ protected:
   Gtk::CheckButton* m_check_recurse;
   Gtk::ProgressBar* m_progress_bar;
 
-  //GSettings:
+  // GSettings:
   Bakery::Conf::Client m_conf_client;
 
   std::unique_ptr<FileRenamer> m_renamer;
 };
 
-} //namespace PrefixSuffix
+} // namespace PrefixSuffix
 
 #endif /* PREFIXSUFFIX_MAINWINDOW_H */

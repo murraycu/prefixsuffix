@@ -22,14 +22,12 @@
 #include <gtkmm/widget.h>
 #include <giomm/settings.h>
 
-namespace Bakery
-{
+namespace Bakery {
 
-namespace Conf
-{
+namespace Conf {
 
 /** Provides behaviors that are common to all widget/key associations.
- */
+*/
 class AssociationBase : public sigc::trackable
 {
 public:
@@ -39,17 +37,16 @@ public:
   void save();
 
   virtual ~AssociationBase();
-    
+
 protected:
   AssociationBase(const Glib::ustring& full_key, bool instant);
   AssociationBase(const AssociationBase& other); // Not implemented
-
 
   bool is_instant() const;
   Glib::ustring get_key() const;
   Glib::RefPtr<const Gio::Settings> get_conf_client() const;
   Glib::RefPtr<Gio::Settings> get_conf_client();
-    
+
   typedef sigc::slot<void> Callback;
   virtual void connect_widget(Callback on_widget_changed) = 0;
 
@@ -65,8 +62,8 @@ private:
   Glib::RefPtr<Gio::Settings> m_conf_client;
 };
 
-} //namespace Conf
+} // namespace Conf
 
-} //namespace Bakery
+} // namespace Bakery
 
-#endif //BAKERY_CONFIGURATION_ASSOCIATIONBASE_H
+#endif // BAKERY_CONFIGURATION_ASSOCIATIONBASE_H

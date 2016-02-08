@@ -1,7 +1,7 @@
 /** Copyright (C) 2002-2015 The PrefixSuffix Development Team
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
@@ -21,14 +21,14 @@
 
 #include <glibmm/ustring.h>
 
-namespace PrefixSuffix
-{
+namespace PrefixSuffix {
 
 class StringRenamer
 {
 public:
-  StringRenamer(const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
-    const Glib::ustring& suffix_replace, const Glib::ustring suffix_with);
+  StringRenamer(const Glib::ustring& prefix_replace,
+    const Glib::ustring prefix_with, const Glib::ustring& suffix_replace,
+    const Glib::ustring suffix_with);
 
   ~StringRenamer();
 
@@ -39,10 +39,10 @@ public:
   const Glib::ustring m_prefix_replace, m_prefix_with;
   const Glib::ustring m_suffix_replace, m_suffix_with;
 
-  //These just avoid repeated checks for empty strings:
+  // These just avoid repeated checks for empty strings:
   const bool m_prefix, m_suffix;
 };
 
-} //namespace PrefixSuffix
+} // namespace PrefixSuffix
 
 #endif /* PREFIXSUFFIX_STRING_RENAMER_H */

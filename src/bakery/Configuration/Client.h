@@ -21,32 +21,30 @@
 
 #include "bakery/Configuration/Association.h"
 
-namespace Bakery
-{
+namespace Bakery {
 
-namespace Conf
-{
+namespace Conf {
 
 /** Configuration Client
- * Allows you to associate widget "values" with configuration keys,
- * and then load() and save() them all at once.
- * The "value" depends on the widget:
- *    Gtk::Entry - text (gconf string).
- *    Gtk::CheckButton, Gtk::RadioButton - active (gconf bool).
- *    Gtk::Range (e.g. scales and scrollbars) - position (gconf float).
- *    Gtk::SpinButton - value (gconf float).
- *    Gtk::Combo - text (gconf string).
- *    Gtk::OptionMenu - item number (gconf int); ideally we would
- *      prefer to use a string representation, but that's not realistic.
- *
- * Advantages compared to Gnome::Conf::Client:
- * - Avoids repetition of key names.
- * - Avoids repetition of the directory name.
- * - Avoids manual code to get and set widget values.
- * - Avoids 2 sets of very similar code, for load and save.
- * - No need for Glib::RefPtr<>
- * - Can do instant apply and instant update with add_instant()..
- */
+* Allows you to associate widget "values" with configuration keys,
+* and then load() and save() them all at once.
+* The "value" depends on the widget:
+*    Gtk::Entry - text (gconf string).
+*    Gtk::CheckButton, Gtk::RadioButton - active (gconf bool).
+*    Gtk::Range (e.g. scales and scrollbars) - position (gconf float).
+*    Gtk::SpinButton - value (gconf float).
+*    Gtk::Combo - text (gconf string).
+*    Gtk::OptionMenu - item number (gconf int); ideally we would
+*      prefer to use a string representation, but that's not realistic.
+*
+* Advantages compared to Gnome::Conf::Client:
+* - Avoids repetition of key names.
+* - Avoids repetition of the directory name.
+* - Avoids manual code to get and set widget values.
+* - Avoids 2 sets of very similar code, for load and save.
+* - No need for Glib::RefPtr<>
+* - Can do instant apply and instant update with add_instant()..
+*/
 class Client : public sigc::trackable
 {
 public:
@@ -61,18 +59,17 @@ public:
   void add_instant(const Glib::ustring& key, Gtk::Widget& widget);
 
 protected:
-
   /** Override this method to add recognition of additional
-   * widget types to a derived class of Client. You must also
-   * provide an implementation for the specialization of Association<T>
-   * for the widget type(s) you are adding support for.
-   */
-  virtual void add_implementation(const Glib::ustring& key, Gtk::Widget& widget, bool instant);
+* widget types to a derived class of Client. You must also
+* provide an implementation for the specialization of Association<T>
+* for the widget type(s) you are adding support for.
+*/
+  virtual void add_implementation(
+    const Glib::ustring& key, Gtk::Widget& widget, bool instant);
 
 public:
-
 protected:
-  template< class T_Widget >
+  template <class T_Widget>
   void add_association(const Glib::ustring& key, T_Widget& widget, bool instant)
   {
     auto assoc = Association<T_Widget>::create(key, widget, instant);
@@ -88,9 +85,8 @@ private:
   type_vecWidgets m_vecWidgets;
 };
 
-} //namespace Conf
+} // namespace Conf
 
-} //namespace Bakery
+} // namespace Bakery
 
-
-#endif //BAKERY_CONFIGURATION_CONFCLIENT_H
+#endif // BAKERY_CONFIGURATION_CONFCLIENT_H

@@ -1,7 +1,7 @@
 /** Copyright (C) 2002-2015 The PrefixSuffix Development Team
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
@@ -24,8 +24,7 @@
 #include <queue>
 #include <set> //TODO: Use unordered_set with C++11.
 
-namespace PrefixSuffix
-{
+namespace PrefixSuffix {
 
 class FileRenamer
 {
@@ -44,34 +43,38 @@ public:
   typedef sigc::signal<void, Glib::ustring> type_signal_stopped;
 
   /** Emitted during renaming.
-   */
+ */
   type_signal_stopped signal_stopped();
-
 
   typedef sigc::signal<void, double> type_signal_progress;
 
   /** Emitted after successful renaming (with no error_message string),
-   * or when renaming stops due to an error (with an error message string).
-   */
+ * or when renaming stops due to an error (with an error message string).
+ */
   type_signal_progress signal_progress();
 
 private:
-
   void build_list_of_files();
-  void build_list_of_files(const std::string& directorypath_uri); //Called recursively.
+  void build_list_of_files(
+    const std::string& directorypath_uri); // Called recursively.
 
   static bool file_is_hidden(const std::string& filepath);
   static void canonical_folder_path(std::string& folderpath);
-  static void get_folder_and_file(const std::string& filepath, std::string& folderpath, std::string& filename);
+  static void get_folder_and_file(const std::string& filepath,
+    std::string& folderpath, std::string& filename);
 
-  void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
-  void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
+  void on_directory_enumerate_children(
+    const Glib::RefPtr<Gio::AsyncResult>& result,
+    const Glib::RefPtr<Gio::File>& directory);
+  void request_next_files(const Glib::RefPtr<Gio::File>& directory,
+    const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
   void on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
-    const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
+    const Glib::RefPtr<Gio::File>& directory,
+    const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
 
   void rename_next_file();
-  void on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& file);
-
+  void on_set_display_name(const Glib::RefPtr<Gio::AsyncResult>& result,
+    const Glib::RefPtr<Gio::File>& file);
 
   void do_rename_files();
   void stop_process(const Glib::ustring& message = Glib::ustring());
@@ -79,27 +82,26 @@ private:
 
   Glib::RefPtr<Gio::Cancellable> m_cancellable;
 
-  //List of files to rename:
+  // List of files to rename:
   typedef std::queue<std::string> type_queue_strings;
   type_queue_strings m_files, m_files_new, m_folders, m_folders_new;
 
-  typedef std::set< Glib::RefPtr<Gio::File> > type_set_files;
+  typedef std::set<Glib::RefPtr<Gio::File>> type_set_files;
   type_set_files m_directory_enumerations_in_progress;
 
   const std::string m_directory_path;
   const StringRenamer m_string_renamer;
   const bool m_recurse_into_folders, m_operate_on_folders, m_operate_on_hidden;
 
-
-  //The original number of files in m_files;
+  // The original number of files in m_files;
   double m_count;
 
-  //type_queue_strings::size_type m_progress_max, m_progress_count;
+  // type_queue_strings::size_type m_progress_max, m_progress_count;
 
   type_signal_stopped m_signal_stopped;
   type_signal_progress m_signal_progress;
 };
 
-} //namespace PrefixSuffix
+} // namespace PrefixSuffix
 
 #endif /* PREFIXSUFFIX_FILE_RENAMER_H */

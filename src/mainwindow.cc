@@ -2,8 +2,8 @@
  *
  * Copyright (C) 2002 The PrefixSuffix Development Team
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
@@ -22,64 +22,67 @@
 #include <gtkmm/messagedialog.h>
 #include <glibmm/i18n.h>
 
-namespace PrefixSuffix
-{
+namespace PrefixSuffix {
 
-MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
-  : Gtk::Window(cobject),
-    m_conf_client(PREFIXSUFFIX_APP_ID)
+MainWindow::MainWindow(
+  BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::Window(cobject)
+  , m_conf_client(PREFIXSUFFIX_APP_ID)
 {
   set_title(_("PrefixSuffix"));
 
   builder->get_widget("grid_inputs", m_grid_inputs);
 
-  //Radiobuttons:
+  // Radiobuttons:
   builder->get_widget("radio_prefix", m_radio_prefix);
-  m_radio_prefix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked) );
-  builder->get_widget("radio_suffix",  m_radio_suffix);
-  m_radio_suffix->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked) );
+  m_radio_prefix->signal_clicked().connect(
+    sigc::mem_fun(*this, &MainWindow::on_radio_prefix_clicked));
+  builder->get_widget("radio_suffix", m_radio_suffix);
+  m_radio_suffix->signal_clicked().connect(
+    sigc::mem_fun(*this, &MainWindow::on_radio_suffix_clicked));
 
-  //Entrys
+  // Entrys
   builder->get_widget("entry_prefix_replace", m_entry_prefix_replace);
   builder->get_widget("entry_prefix_with", m_entry_prefix_with);
   builder->get_widget("entry_suffix_replace", m_entry_suffix_replace);
   builder->get_widget("entry_suffix_with", m_entry_suffix_with);
   builder->get_widget("entry_path", m_entry_path);
 
-  //Containers:
+  // Containers:
   builder->get_widget("table_prefix", m_container_prefix);
   builder->get_widget("table_suffix", m_container_suffix);
 
-  //Buttons:
+  // Buttons:
   builder->get_widget("button_process", m_button_process);
-  m_button_process->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_process) );
+  m_button_process->signal_clicked().connect(
+    sigc::mem_fun(*this, &MainWindow::on_button_process));
   builder->get_widget("button_stop", m_button_stop);
-  m_button_stop->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_button_stop) );
+  m_button_stop->signal_clicked().connect(
+    sigc::mem_fun(*this, &MainWindow::on_button_stop));
 
-  //Check Buttons:
+  // Check Buttons:
   builder->get_widget("check_operate_on_hidden", m_check_hidden);
   builder->get_widget("check_operate_on_folders", m_check_folders);
   builder->get_widget("check_recurse", m_check_recurse);
 
-  //Progress bar:
+  // Progress bar:
   builder->get_widget("progressbar", m_progress_bar);
 
+  // GConf: associate configuration keys with widgets. We use load() and save()
+  // later:
+  m_conf_client.add("prefix-replace", *m_entry_prefix_replace);
+  m_conf_client.add("prefix-with", *m_entry_prefix_with);
+  m_conf_client.add("suffix-replace", *m_entry_suffix_replace);
+  m_conf_client.add("suffix-with", *m_entry_suffix_with);
+  m_conf_client.add("prefix", *m_radio_prefix);
+  m_conf_client.add("suffix", *m_radio_suffix);
+  m_conf_client.add("check-operate-on-hidden", *m_check_hidden);
+  m_conf_client.add("check-operate-on-folders", *m_check_folders);
+  m_conf_client.add("check-recurse", *m_check_recurse);
 
-  //GConf: associate configuration keys with widgets. We use load() and save() later:
-  m_conf_client.add("prefix-replace",  *m_entry_prefix_replace);
-  m_conf_client.add("prefix-with",  *m_entry_prefix_with);
-  m_conf_client.add("suffix-replace",  *m_entry_suffix_replace);
-  m_conf_client.add("suffix-with",  *m_entry_suffix_with);
-  m_conf_client.add("prefix",  *m_radio_prefix);
-  m_conf_client.add("suffix",  *m_radio_suffix);
-  m_conf_client.add("check-operate-on-hidden",  *m_check_hidden);
-  m_conf_client.add("check-operate-on-folders",  *m_check_folders);
-  m_conf_client.add("check-recurse",  *m_check_recurse);
+  m_conf_client.load(); // Fill the widgets from the stored preferences.
 
-  m_conf_client.load(); //Fill the widgets from the stored preferences.
-
-
-  //set_statusbar(m_Status);
+  // set_statusbar(m_Status);
 
   show_all_children();
 }
@@ -88,128 +91,127 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::on_radio_prefix_clicked()
+void
+MainWindow::on_radio_prefix_clicked()
 {
   const bool enable = m_radio_prefix->get_active();
   m_container_prefix->set_sensitive(enable);
 }
 
-void MainWindow::on_radio_suffix_clicked()
+void
+MainWindow::on_radio_suffix_clicked()
 {
   const bool enable = m_radio_suffix->get_active();
   m_container_suffix->set_sensitive(enable);
 }
 
-void MainWindow::on_button_process()
+void
+MainWindow::on_button_process()
 {
-  //The UI will be unlocked in stop_process().
+  // The UI will be unlocked in stop_process().
   set_ui_locked();
 
   do_rename();
 }
 
-void MainWindow::set_ui_locked(bool locked)
+void
+MainWindow::set_ui_locked(bool locked)
 {
-  //Prevent/allowchanges to any of the criteria:
+  // Prevent/allowchanges to any of the criteria:
   m_grid_inputs->set_sensitive(!locked);
 
-  //Prevent/allow a new start or a close:
+  // Prevent/allow a new start or a close:
   m_button_process->set_sensitive(!locked);
 
-  //Prevent/allow a stop.
+  // Prevent/allow a stop.
   m_button_stop->set_sensitive(locked);
 
   Glib::RefPtr<Gdk::Window> window = get_window();
-  if(!window)
+  if (!window)
     return;
 
   Glib::RefPtr<Gdk::Cursor> cursor;
-  if(locked)
-  {
+  if (locked) {
     m_old_cursor = window->get_cursor();
     cursor = Gdk::Cursor::create(get_display(), Gdk::WATCH);
-  }
-  else
-  {
+  } else {
     cursor = m_old_cursor;
     m_old_cursor.reset();
   }
 
   window->set_cursor(cursor);
 
-  //Force the GUI to update:
-  //TODO: Make sure that gtkmm has some non-Gtk::Main API for this:
-  while(gtk_events_pending())
+  // Force the GUI to update:
+  // TODO: Make sure that gtkmm has some non-Gtk::Main API for this:
+  while (gtk_events_pending())
     gtk_main_iteration_do(true);
 }
 
-void MainWindow::do_rename()
+void
+MainWindow::do_rename()
 {
-  if(m_renamer)
-  {
+  if (m_renamer) {
     stop_process(_("A rename already seems to be in process."));
     return;
   }
 
-  //Check that there is enough information:
+  // Check that there is enough information:
   const Glib::ustring uri = m_entry_path->get_uri();
-  if(uri.empty())
-  {
+  if (uri.empty()) {
     stop_process(_("Please choose a directory."));
     return;
   }
   /*
-  else if ( !(Glib::file_test( m_entry_path->get_text(), Glib::FILE_TEST_IS_DIR)) )
-  {
+else if ( !(Glib::file_test( m_entry_path->get_text(),
+Glib::FILE_TEST_IS_DIR)) )
+{
 
-  }
-  */
-  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text().empty()) &&  (m_entry_prefix_with->get_text().empty()) )
-  {
+}
+*/
+  if (m_radio_prefix->get_active() &&
+      (m_entry_prefix_replace->get_text().empty()) &&
+      (m_entry_prefix_with->get_text().empty())) {
     stop_process(_("Please enter values in the prefix fields."));
     return;
   }
 
-  if( m_radio_prefix->get_active() && (m_entry_prefix_replace->get_text() == m_entry_prefix_with->get_text()) )
-  {
+  if (m_radio_prefix->get_active() &&
+      (m_entry_prefix_replace->get_text() == m_entry_prefix_with->get_text())) {
     stop_process(_("The Replace and With values are identical."));
     return;
   }
 
-  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text().empty()) &&  (m_entry_suffix_with->get_text().empty()) )
-  {
+  if (m_radio_suffix->get_active() &&
+      (m_entry_suffix_replace->get_text().empty()) &&
+      (m_entry_suffix_with->get_text().empty())) {
     stop_process(_("Please enter values in the suffix fields."));
     return;
   }
 
-  if( m_radio_suffix->get_active() && (m_entry_suffix_replace->get_text() == m_entry_suffix_with->get_text()) )
-  {
+  if (m_radio_suffix->get_active() &&
+      (m_entry_suffix_replace->get_text() == m_entry_suffix_with->get_text())) {
     stop_process(_("The Replace and With values are identical."));
     return;
   }
 
-  //FileRenamer is capable of replacing prefixes and suffixes at
-  //the same time, but we don't want that,
-  //so we pass only one set of prefix/suffix strings to FileRenamer:
+  // FileRenamer is capable of replacing prefixes and suffixes at
+  // the same time, but we don't want that,
+  // so we pass only one set of prefix/suffix strings to FileRenamer:
   Glib::ustring prefix_replace, prefix_with, suffix_replace, suffix_with;
-  if(m_radio_prefix->get_active())
-  {
+  if (m_radio_prefix->get_active()) {
     prefix_replace = m_entry_prefix_replace->get_text();
     prefix_with = m_entry_prefix_with->get_text();
-  } else if(m_radio_suffix->get_active())
-  {
+  } else if (m_radio_suffix->get_active()) {
     suffix_replace = m_entry_suffix_replace->get_text();
     suffix_with = m_entry_suffix_with->get_text();
   }
 
-  m_renamer = std::make_unique<FileRenamer>(uri,
-    prefix_replace, prefix_with,
-    suffix_replace, suffix_with,
-    m_check_recurse->get_active(), m_check_folders->get_active(),
-    m_check_hidden->get_active());
+  m_renamer = std::make_unique<FileRenamer>(uri, prefix_replace, prefix_with,
+    suffix_replace, suffix_with, m_check_recurse->get_active(),
+    m_check_folders->get_active(), m_check_hidden->get_active());
 
-  //We have enough to start processing:
-  //Bakery::BusyCursor busyCursor(*this);
+  // We have enough to start processing:
+  // Bakery::BusyCursor busyCursor(*this);
 
   m_renamer->signal_stopped().connect(
     sigc::mem_fun(*this, &MainWindow::on_renamer_stopped));
@@ -218,60 +220,68 @@ void MainWindow::do_rename()
   m_renamer->start();
 }
 
-void MainWindow::on_button_close()
+void
+MainWindow::on_button_close()
 {
 }
 
-void MainWindow::on_button_stop()
+void
+MainWindow::on_button_stop()
 {
-  //Just in case:
+  // Just in case:
   stop_process();
 }
 
-void MainWindow::on_hide()
+void
+MainWindow::on_hide()
 {
-  //Store the widgets' contents in GConf, for use when the app is restarted.
+  // Store the widgets' contents in GConf, for use when the app is restarted.
   m_conf_client.save();
 }
 
-bool MainWindow::on_delete_event(GdkEventAny* /* event */)
+bool
+MainWindow::on_delete_event(GdkEventAny* /* event */)
 {
-  //Just in case:
+  // Just in case:
   stop_process();
 
   return false;
 }
 
-void MainWindow::show_error(const Glib::ustring& message)
+void
+MainWindow::show_error(const Glib::ustring& message)
 {
   Gtk::MessageDialog dialog(*this, message);
   dialog.run();
 }
 
-void MainWindow::on_renamer_progress(const double fraction)
+void
+MainWindow::on_renamer_progress(const double fraction)
 {
-   m_progress_bar->set_fraction(fraction);
+  m_progress_bar->set_fraction(fraction);
 }
 
-void MainWindow::on_renamer_stopped(const Glib::ustring& error_message)
+void
+MainWindow::on_renamer_stopped(const Glib::ustring& error_message)
 {
   m_renamer.reset();
 
   stop_process(error_message);
 }
 
-void MainWindow::stop_process(const Glib::ustring& error_message)
+void
+MainWindow::stop_process(const Glib::ustring& error_message)
 {
-  if(m_renamer) {
+  if (m_renamer) {
     m_renamer->stop();
 
     m_renamer.reset();
   }
 
-  if(!error_message.empty())
+  if (!error_message.empty())
     show_error(error_message);
 
   set_ui_locked(false);
 }
 
-} //namespace PrefixSuffix
+} // namespace PrefixSuffix

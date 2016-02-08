@@ -16,16 +16,10 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "bakery/Configuration/Association.h"
 
+namespace Bakery {
+namespace Conf {
+} // namespace Conf
 
-namespace Bakery
-{
-namespace Conf
-{
-
-
-} //namespace Conf
-
-} //namespace Bakery
+} // namespace Bakery

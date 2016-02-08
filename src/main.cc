@@ -29,7 +29,7 @@
 int
 main(int argc, char* argv[])
 {
-  Glib::RefPtr<PrefixSuffix::Application> application = 
+  Glib::RefPtr<PrefixSuffix::Application> application =
     PrefixSuffix::Application::create();
 
   return application->run(argc, argv);

@@ -18,15 +18,13 @@
 
 #include "bakery/Configuration/Client.h"
 
+namespace Bakery {
 
-namespace Bakery
-{
-
-namespace Conf
-{
+namespace Conf {
 
 AssociationBase::AssociationBase(const Glib::ustring& key, bool instant)
-: m_key(key), m_instant(instant)
+  : m_key(key)
+  , m_instant(instant)
 {
 }
 
@@ -34,53 +32,60 @@ AssociationBase::~AssociationBase()
 {
 }
 
-void AssociationBase::add(const Glib::RefPtr<Gio::Settings>& conf_client)
+void
+AssociationBase::add(const Glib::RefPtr<Gio::Settings>& conf_client)
 {
   // Connect signals so that widget changes are saved instantly,
   // and so that widgets are updated immediately if someone else changes
   // the configuration data.
 
   m_conf_client = conf_client;
-  if(is_instant())
-  {
+  if (is_instant()) {
     connect_widget(sigc::mem_fun(*this, &AssociationBase::on_widget_changed));
 
-    //TODO: Use this when we can use glibmm 2.46,
-    //so we can respond to changes from outside of our UI.
-    //conf_client->connect_changed(get_key(), sigc::mem_fun(*this, &AssociationBase::on_conf_changed));
+    // TODO: Use this when we can use glibmm 2.46,
+    // so we can respond to changes from outside of our UI.
+    // conf_client->connect_changed(get_key(), sigc::mem_fun(*this,
+    // &AssociationBase::on_conf_changed));
   }
 }
 
-void AssociationBase::load()
+void
+AssociationBase::load()
 {
-  if(get_conf_client())
+  if (get_conf_client())
     load_widget();
 }
 
-void AssociationBase::save()
+void
+AssociationBase::save()
 {
-  if(get_conf_client())
+  if (get_conf_client())
     save_widget();
 }
 
-void AssociationBase::on_widget_changed()
+void
+AssociationBase::on_widget_changed()
 {
   // TODO: Should this be protected by a mutex to avoid overlapping callbacks?
   save();
 }
 
-void AssociationBase::on_conf_changed()
+void
+AssociationBase::on_conf_changed()
 {
   // TODO: Should this be protected by a mutex to avoid overlapping callbacks?
   load();
 }
 
-bool AssociationBase::is_instant() const
+bool
+AssociationBase::is_instant() const
 {
   return m_instant;
 }
 
-Glib::ustring AssociationBase::get_key() const
+Glib::ustring
+AssociationBase::get_key() const
 {
   return m_key;
 }
@@ -90,16 +95,18 @@ Glib::ustring AssociationBase::get_key() const
 // objects should be const:
 // http://www.awprofessional.com/content/images/0201924889/items/item21.html
 
-Glib::RefPtr<const Gio::Settings> AssociationBase::get_conf_client() const
+Glib::RefPtr<const Gio::Settings>
+AssociationBase::get_conf_client() const
 {
   return m_conf_client;
 }
 
-Glib::RefPtr<Gio::Settings> AssociationBase::get_conf_client()
+Glib::RefPtr<Gio::Settings>
+AssociationBase::get_conf_client()
 {
   return m_conf_client;
 }
 
-} //namespace Conf
+} // namespace Conf
 
-} //namespace Bakery
+} // namespace Bakery

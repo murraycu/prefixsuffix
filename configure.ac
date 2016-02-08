@@ -13,7 +13,7 @@ AC_ARG_VAR([ACLOCAL_FLAGS], [aclocal flags, e.g. -I <macro dir>])
 dnl Checks for programs.
 AC_PROG_CXX
 
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
+AX_CXX_COMPILE_STDCXX([14], [noext],[optional])
 
 dnl Checks for libraries.
 PKG_CHECK_MODULES(DEPS, gtkmm-3.0)

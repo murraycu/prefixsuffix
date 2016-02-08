@@ -17,10 +17,6 @@
  */
 
 #include "bakery/Configuration/Client.h"
-#include <gtkmm/togglebutton.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/range.h>
-
 
 namespace Bakery
 {

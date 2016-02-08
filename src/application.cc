@@ -20,8 +20,6 @@
 
 #include "application.h"
 #include "mainwindow.h"
-#include <gtkmm/builder.h>
-#include <glibmm/optioncontext.h>
 #include <iostream>
 
 #include <glibmm/i18n.h>

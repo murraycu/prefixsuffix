@@ -19,8 +19,6 @@
  */
 
 #include "mainwindow.h"
-#include <gtkmm/menu.h>
-#include <gtkmm/menubar.h>
 #include <gtkmm/messagedialog.h>
 #include <glibmm/i18n.h>
 

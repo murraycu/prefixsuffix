@@ -139,7 +139,7 @@ void Application::on_startup()
 // The default on_command_line() (used when 
 // Gio::APPLICATION_HANDLES_COMMAND_LINE is not set) calls activate(),
 // so, likewise, we now need to do that here.
-int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line)
+int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& /* command_line */)
 {
   //std::cout << G_STRFUNC << ": debug" << std::endl;
 

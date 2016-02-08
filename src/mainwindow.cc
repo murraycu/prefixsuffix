@@ -235,7 +235,7 @@ void MainWindow::on_hide()
   m_conf_client.save();
 }
 
-bool MainWindow::on_delete_event(GdkEventAny* event)
+bool MainWindow::on_delete_event(GdkEventAny* /* event */)
 {
   //Just in case:
   stop_process();

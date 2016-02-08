@@ -82,7 +82,7 @@ protected:
   //GSettings:
   Bakery::Conf::Client m_conf_client;
 
-  FileRenamer* m_renamer;
+  std::unique_ptr<FileRenamer> m_renamer;
 };
 
 } //namespace PrefixSuffix

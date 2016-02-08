@@ -27,8 +27,7 @@ namespace PrefixSuffix
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject),
-    m_conf_client(PREFIXSUFFIX_APP_ID),
-    m_renamer(nullptr)
+    m_conf_client(PREFIXSUFFIX_APP_ID)
 {
   set_title(_("PrefixSuffix"));
 
@@ -203,11 +202,11 @@ void MainWindow::do_rename()
     suffix_with = m_entry_suffix_with->get_text();
   }
 
-  m_renamer = new FileRenamer(uri,
-  prefix_replace, prefix_with,
-  suffix_replace, suffix_with,
-  m_check_recurse->get_active(), m_check_folders->get_active(),
-  m_check_hidden->get_active());
+  m_renamer = std::make_unique<FileRenamer>(uri,
+    prefix_replace, prefix_with,
+    suffix_replace, suffix_with,
+    m_check_recurse->get_active(), m_check_folders->get_active(),
+    m_check_hidden->get_active());
 
   //We have enough to start processing:
   //Bakery::BusyCursor busyCursor(*this);
@@ -256,8 +255,7 @@ void MainWindow::on_renamer_progress(const double fraction)
 
 void MainWindow::on_renamer_stopped(const Glib::ustring& error_message)
 {
-  delete m_renamer;
-  m_renamer = nullptr;
+  m_renamer.reset();
 
   stop_process(error_message);
 }
@@ -267,8 +265,7 @@ void MainWindow::stop_process(const Glib::ustring& error_message)
   if(m_renamer) {
     m_renamer->stop();
 
-    delete m_renamer;
-    m_renamer = nullptr;
+    m_renamer.reset();
   }
 
   if(!error_message.empty())

@@ -30,9 +30,9 @@ namespace PrefixSuffix
 class FileRenamer
 {
 public:
-  FileRenamer(const Glib::ustring& directory_path,
-    const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
-    const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
+  FileRenamer(const std::string& directory_path,
+    const std::string& prefix_replace, const std::string prefix_with,
+    const std::string& suffix_replace, const std::string suffix_with,
     bool recurse_into_folders = true, bool operate_on_folders = false,
     bool operate_on_hidden = false);
 
@@ -58,11 +58,11 @@ public:
 private:
 
   void build_list_of_files();
-  void build_list_of_files(const Glib::ustring& directorypath_uri); //Called recursively.
+  void build_list_of_files(const std::string& directorypath_uri); //Called recursively.
 
-  static bool file_is_hidden(const Glib::ustring& filepath);
-  static void canonical_folder_path(Glib::ustring& folderpath);
-  static void get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename);
+  static bool file_is_hidden(const std::string& filepath);
+  static void canonical_folder_path(std::string& folderpath);
+  static void get_folder_and_file(const std::string& filepath, std::string& folderpath, std::string& filename);
 
   void on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gio::File>& directory);
   void request_next_files(const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator);
@@ -80,13 +80,13 @@ private:
   Glib::RefPtr<Gio::Cancellable> m_cancellable;
 
   //List of files to rename:
-  typedef std::queue<Glib::ustring> type_queue_strings;
+  typedef std::queue<std::string> type_queue_strings;
   type_queue_strings m_files, m_files_new, m_folders, m_folders_new;
 
   typedef std::set< Glib::RefPtr<Gio::File> > type_set_files;
   type_set_files m_directory_enumerations_in_progress;
 
-  const Glib::ustring m_directory_path;
+  const std::string m_directory_path;
   const StringRenamer m_string_renamer;
   const bool m_recurse_into_folders, m_operate_on_folders, m_operate_on_hidden;
 

@@ -23,9 +23,9 @@
 namespace PrefixSuffix
 {
 
-FileRenamer::FileRenamer(const Glib::ustring& directory_path,
-  const Glib::ustring& prefix_replace, const Glib::ustring prefix_with,
-  const Glib::ustring& suffix_replace, const Glib::ustring suffix_with,
+FileRenamer::FileRenamer(const std::string& directory_path,
+  const std::string& prefix_replace, const std::string prefix_with,
+  const std::string& suffix_replace, const std::string suffix_with,
   bool recurse_into_folders, bool operate_on_folders,
   bool operate_on_hidden)
   : m_directory_path(directory_path),
@@ -102,9 +102,9 @@ void FileRenamer::rename_next_file()
   m_signal_progress.emit(progress_fraction);
 
   //Rename the next file:
-  const Glib::ustring uri = m_files.front();
+  const std::string uri = m_files.front();
   m_files.pop();
-  const Glib::ustring uriNew = m_files_new.front();
+  const std::string uriNew = m_files_new.front();
   m_files_new.pop();
   const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
 
@@ -162,7 +162,7 @@ void FileRenamer::request_next_files(const Glib::RefPtr<Gio::File>& directory, c
 void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& result,
   const Glib::RefPtr<Gio::File>& directory, const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
-  typedef std::list<Glib::ustring> type_list_strings;
+  typedef std::list<std::string> type_list_strings;
   type_list_strings list_folders;
 
   try
@@ -217,7 +217,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
 
       if(use)
       {
-        Glib::ustring uri = child->get_uri();
+        auto uri = child->get_uri();
 
         const Gio::FileType file_type = info->get_file_type();
         if(file_type == Gio::FILE_TYPE_DIRECTORY)
@@ -229,7 +229,7 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
           //and maybe rename them:
           list_folders.emplace_back(uri);
         } else {
-          const Glib::ustring& basename_new = m_string_renamer.get_new_basename(basename);
+          const std::string& basename_new = m_string_renamer.get_new_basename(basename);
           if(basename_new.empty())
           {
             std::cerr << G_STRFUNC << ": m_string_renamer.get_new_basename(" << basename << ") returned an empty string." << std::endl;
@@ -268,9 +268,9 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
 
     if(m_operate_on_folders)
     {
-      const Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(child_dir);
-      const std::string basename = file->get_basename();
-      const Glib::ustring& filepath_new = m_string_renamer.get_new_basename(basename);
+      const auto file = Gio::File::create_for_uri(child_dir);
+      const auto basename = file->get_basename();
+      const auto filepath_new = m_string_renamer.get_new_basename(basename);
       if(child_dir != filepath_new) //Ignore it if the prefix/suffix change had no effect
       {
         m_folders.push(child_dir);
@@ -284,7 +284,7 @@ void FileRenamer::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncR
 {
   try
   {
-    Glib::RefPtr<Gio::FileEnumerator> enumerator = directory->enumerate_children_finish(result);
+    auto enumerator = directory->enumerate_children_finish(result);
     request_next_files(directory, enumerator);
   }
   catch(const Glib::Error& ex)
@@ -296,15 +296,15 @@ void FileRenamer::on_directory_enumerate_children(const Glib::RefPtr<Gio::AsyncR
   }
 }
 
-void FileRenamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
+void FileRenamer::build_list_of_files(const std::string& directorypath_uri_in)
 {
   //This is a recursion.
 
-  Glib::ustring directorypath_uri = directorypath_uri_in;
+  auto directorypath_uri = directorypath_uri_in;
   canonical_folder_path(directorypath_uri);
 
   //Get the filenames in the directory:
-  Glib::RefPtr<Gio::File> directory = Gio::File::create_for_uri(directorypath_uri);
+  auto directory = Gio::File::create_for_uri(directorypath_uri);
   m_directory_enumerations_in_progress.insert(
     m_directory_enumerations_in_progress.end(),
     directory);
@@ -316,20 +316,20 @@ void FileRenamer::build_list_of_files(const Glib::ustring& directorypath_uri_in)
     G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
 }
 
-bool FileRenamer::file_is_hidden(const Glib::ustring& filename) //static
+bool FileRenamer::file_is_hidden(const std::string& filename) //static
 {
   //See whether it has "." at the start:
-  Glib::ustring::size_type size = filename.size();
+  const auto size = filename.size();
   if(size > 0)
     return (filename[0] == '.');
   else
     return false;
 }
 
-void FileRenamer::canonical_folder_path(Glib::ustring& folderpath) //static
+void FileRenamer::canonical_folder_path(std::string& folderpath) //static
 {
   //Make sure that it has "/" at the end:
-  const Glib::ustring::size_type size = folderpath.size();
+  const auto size = folderpath.size();
   if(size > 0)
   {
     if(folderpath[size - 1] != '/') //TODO: Cross platform - mac uses ':'.
@@ -337,7 +337,7 @@ void FileRenamer::canonical_folder_path(Glib::ustring& folderpath) //static
   }
 }
 
-void FileRenamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustring& folderpath, Glib::ustring& filename)
+void FileRenamer::get_folder_and_file(const std::string& filepath, std::string& folderpath, std::string& filename)
 {
   //Initialize output parameters:
   folderpath.erase();
@@ -346,8 +346,8 @@ void FileRenamer::get_folder_and_file(const Glib::ustring& filepath, Glib::ustri
   //TODO: Use Uri::extract_short_name()?
 
   //Find right-most "/" separator:
-  const Glib::ustring::size_type posSeparator = filepath.rfind("/");
-  if(posSeparator != Glib::ustring::npos) //If it was found.
+  const auto posSeparator = filepath.rfind("/");
+  if(posSeparator != std::string::npos) //If it was found.
   {
     folderpath = filepath.substr(0, posSeparator + 1); //include the "/".
 

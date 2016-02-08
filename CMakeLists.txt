@@ -3,7 +3,7 @@ project ("prefixsuffix")
 
 set(PACKAGE_VERSION "0.6.9")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set (CMAKE_CXX_STANDARD 14)
 
 include(FindPkgConfig)
 pkg_check_modules(DEPS REQUIRED gtkmm-3.0)

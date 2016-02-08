@@ -49,7 +49,6 @@ private:
   void set_ui_locked(bool locked = true);
   void show_error(const Glib::ustring& message);
   void stop_process(const Glib::ustring& message = Glib::ustring());
-  void clear_lists();
 
   Glib::RefPtr<Gdk::Cursor> m_old_cursor;
 

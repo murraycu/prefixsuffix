@@ -186,14 +186,16 @@ void FileRenamer::on_directory_next_files(const Glib::RefPtr<Gio::AsyncResult>& 
       return;
     }
 
-    for(type_list_file_info::const_iterator iter = list_info.begin(); iter != list_info.end(); ++iter)
+    for(auto info : list_info)
     {
-      Glib::RefPtr<Gio::FileInfo> info = *iter;
-      const Glib::RefPtr<const Gio::File> child = directory->get_child(info->get_name());
+      if(!info)
+        continue;
+
+      const auto child = directory->get_child(info->get_name());
 
       bool use = true;
 
-      const std::string basename = child->get_basename();
+      const auto basename = child->get_basename();
       if(basename.empty())
       {
         std::cerr << G_STRFUNC << ": child->get_basename() return an empty string." << std::endl;

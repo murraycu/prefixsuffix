@@ -59,14 +59,20 @@ void Client::add_implementation(const Glib::ustring& key, Gtk::Widget& widget, b
 
 void Client::load()
 {
-  for (type_vecWidgets::iterator iter = m_vecWidgets.begin(); iter != m_vecWidgets.end(); ++iter)
-    (*iter)->load();
+  for (const auto& elem : m_vecWidgets)
+  {
+    if (elem)
+      elem->load();
+  }
 }
 
 void Client::save()
 {
-  for (type_vecWidgets::iterator iter = m_vecWidgets.begin(); iter != m_vecWidgets.end(); ++iter)
-    (*iter)->save();
+  for (const auto& elem : m_vecWidgets)
+  {
+    if (elem)
+      elem->save();
+  }
 }
 
 

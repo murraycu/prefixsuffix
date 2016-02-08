@@ -13,26 +13,38 @@ configure_file(
         ${CMAKE_CURRENT_BINARY_DIR}/data/prefixsuffix.glade
         COPYONLY)
 
+# Let the C++ compiler find the #include files for our own source code:
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_BINARY_DIR}/src
         ${DEPS_INCLUDE_DIRS})
 link_directories(${DEPS_LIBRARY_DIRS})
 
+# Generate config.h from config.h.in:
 configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
 
+# Check that we have the glib-compile-resources utiltity executable:
+find_program (glib_compile_resources_executable glib-compile-resources)
+if (glib_compile_resources_executable)
+        # TODO: Find a way to write if(), without else(), so we only mention failure.
+	message (STATUS "glib-compile-resources executable found.")
+else ()
+	message (FATAL_ERROR "glib-compile-resources executable not found. This should be provided by glib.")
+endif ()
+
 set (resource_dir ${CMAKE_CURRENT_SOURCE_DIR}/data)
 set (resource_file ${resource_dir}/prefixsuffix.gresource.xml)
+set (resource_file_generated_source prefixsuffix-resources.c)
 
 add_custom_command(
     OUTPUT prefixsuffix-resources.c
     MAIN_DEPENDENCY ${resource_file}
     DEPENDS ${resource_dir}/prefixsuffix.glade
 
-    COMMAND glib-compile-resources --internal --target=prefixsuffix-resources.c --sourcedir=${CMAKE_CURRENT_SOURCE_DIR} --generate-source ${resource_file}
+    COMMAND ${glib_compile_resources_executable} --internal --target=${resource_file_generated_source} --sourcedir=${CMAKE_CURRENT_SOURCE_DIR} --generate-source ${resource_file}
 )
 
 
@@ -53,7 +65,7 @@ set(SOURCE_FILES
     src/string_renamer.cc
     src/string_renamer.h
     src/constants.h
-    prefixsuffix-resources.c)
+    ${resource_file_generated_source})
 
 add_executable(prefixsuffix ${SOURCE_FILES})
 

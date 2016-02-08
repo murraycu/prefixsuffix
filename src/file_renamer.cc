@@ -32,9 +32,7 @@ FileRenamer::FileRenamer(const Glib::ustring& directory_path,
     m_string_renamer(prefix_replace, prefix_with, suffix_replace, suffix_with),
     m_recurse_into_folders(recurse_into_folders),
     m_operate_on_folders(operate_on_folders),
-    m_operate_on_hidden(operate_on_hidden),
-    m_progress_max(0),
-    m_progress_count(0)
+    m_operate_on_hidden(operate_on_hidden)
 {
 }
 

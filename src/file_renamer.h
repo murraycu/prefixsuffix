@@ -94,7 +94,7 @@ private:
   //The original number of files in m_files;
   double m_count;
 
-  type_queue_strings::size_type m_progress_max, m_progress_count;
+  //type_queue_strings::size_type m_progress_max, m_progress_count;
 
   type_signal_stopped m_signal_stopped;
   type_signal_progress m_signal_progress;

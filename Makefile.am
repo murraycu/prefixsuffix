@@ -45,6 +45,7 @@ prefixsuffix_CFLAGS = $(DEPS_CFLAGS) \
 	-I$(top_builddir) -I$(top_srcdir)
 
 prefixsuffix_CXXFLAGS = $(DEPS_CFLAGS) \
+	$(PREFIXSUFFIX_WXXFLAGS) \
 	-I$(top_builddir)/src -I$(top_srcdir)/src \
 	-I$(top_builddir) -I$(top_srcdir) \
   -DPREFIXSUFFIX_APP_ID=\"io.github.murraycu.PrefixSuffix\"

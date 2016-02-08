@@ -23,7 +23,7 @@ TESTS = \
 	tests/test_rename_strings
 
 prefixsuffix_includes = -I$(top_builddir)/src -I$(top_srcdir)/src -I$(top_builddir) -I$(top_srcdir)
-tests_cppflags = $(prefixsuffix_includes) $(DEPS_CFLAGS)
+tests_cppflags = $(prefixsuffix_includes) $(DEPS_CFLAGS) $(PREFIXSUFFIX_WXXFLAGS)
 tests_ldadd = $(DEPS_LIBS)
 
 tests_test_rename_strings_SOURCES = tests/test_rename_strings.cc \

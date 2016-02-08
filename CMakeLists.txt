@@ -8,11 +8,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include(FindPkgConfig)
 pkg_check_modules(DEPS REQUIRED gtkmm-3.0)
 
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/prefixsuffix.glade
-        ${CMAKE_CURRENT_BINARY_DIR}/data/prefixsuffix.glade
-        COPYONLY)
-
 # Let the C++ compiler find the #include files for our own source code:
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src

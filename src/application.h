@@ -38,9 +38,9 @@ public:
     
 protected:
   //Overrides of default signal handlers:
-  virtual void on_startup();
-  virtual void on_activate();
-  virtual int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line);
+  void on_startup() override;
+  void on_activate() override;
+  int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line) override;
 
   int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
 

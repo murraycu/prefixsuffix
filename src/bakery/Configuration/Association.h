@@ -205,19 +205,19 @@ class Association<Gtk::Range>  : public AssociationCreation<Gtk::Range>
 public:
   typedef Gtk::Range type_widget;
   
-  void connect_widget(Callback widget_changed)
+  void connect_widget(Callback widget_changed) override
   {
     m_widget.signal_value_changed().connect(widget_changed);
   }
 
-  void load_widget()
+  void load_widget() override
   {
     double val = get_conf_client()->get_double(get_key());
     if (m_widget.get_value() != val)
       m_widget.set_value(val);
   }
 
-  void save_widget()
+  void save_widget() override
   {
     double val = m_widget.get_value();
     double existing_val = get_conf_client()->get_double(get_key());

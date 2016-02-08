@@ -53,8 +53,8 @@ private:
   Glib::RefPtr<Gdk::Cursor> m_old_cursor;
 
 protected:
-  virtual void on_hide(); //override.
-  virtual bool on_delete_event(GdkEventAny* event); //override.
+  void on_hide() override;
+  bool on_delete_event(GdkEventAny* event) override;
 
   void on_renamer_progress(const double fraction);
   void on_renamer_stopped(const Glib::ustring& error_message);

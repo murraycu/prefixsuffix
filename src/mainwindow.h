@@ -34,6 +34,10 @@ public:
     BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   virtual ~MainWindow();
 
+protected:
+  void on_hide() override;
+  bool on_delete_event(GdkEventAny* event) override;
+
 private:
   // Signal Handlers:
   void on_radio_prefix_clicked();
@@ -50,10 +54,6 @@ private:
   void stop_process(const Glib::ustring& message = Glib::ustring());
 
   Glib::RefPtr<Gdk::Cursor> m_old_cursor;
-
-protected:
-  void on_hide() override;
-  bool on_delete_event(GdkEventAny* event) override;
 
   void on_renamer_progress(const double fraction);
   void on_renamer_stopped(const Glib::ustring& error_message);

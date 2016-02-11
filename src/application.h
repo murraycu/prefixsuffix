@@ -42,9 +42,9 @@ protected:
   int on_command_line(
     const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line) override;
 
+private:
   int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
 
-private:
   void create_window();
 
   void on_window_hide();

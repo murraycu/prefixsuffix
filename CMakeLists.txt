@@ -5,6 +5,11 @@ set(PACKAGE_VERSION "0.6.9")
 
 set (CMAKE_CXX_STANDARD 14)
 
+
+enable_testing()
+add_subdirectory (tests)
+
+
 include(FindPkgConfig)
 pkg_check_modules(DEPS REQUIRED gtkmm-3.0)
 

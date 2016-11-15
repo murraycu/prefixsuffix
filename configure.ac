@@ -16,7 +16,7 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX([14], [noext],[optional])
 
 dnl Checks for libraries.
-PKG_CHECK_MODULES(DEPS, gtkmm-3.0)
+PKG_CHECK_MODULES(DEPS, gtkmm-4.0)
 
 # Allow use of mm-common macros for the warnings option.
 MM_PREREQ([0.9.5])

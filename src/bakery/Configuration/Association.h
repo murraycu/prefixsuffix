@@ -63,7 +63,7 @@ class Association : public AssociationCreation<T_Widget>
 public:
   // For some reason, the compiler can not use this if it is in the base class:
   // typedef AssociationCreation<T_Widget>::Callback Callback;
-  typedef sigc::slot<void> Callback;
+  typedef sigc::slot<void()> Callback;
 
   /** These methods must be implemented explicitly for each
 * specialization of Association<T> to provide appropriate

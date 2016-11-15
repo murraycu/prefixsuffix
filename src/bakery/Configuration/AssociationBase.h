@@ -47,7 +47,7 @@ protected:
   Glib::RefPtr<const Gio::Settings> get_conf_client() const;
   Glib::RefPtr<Gio::Settings> get_conf_client();
 
-  typedef sigc::slot<void> Callback;
+  typedef sigc::slot<void()> Callback;
   virtual void connect_widget(Callback on_widget_changed) = 0;
 
 private:

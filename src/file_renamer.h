@@ -40,13 +40,13 @@ public:
   void start();
   void stop();
 
-  typedef sigc::signal<void, Glib::ustring> type_signal_stopped;
+  typedef sigc::signal<void(Glib::ustring)> type_signal_stopped;
 
   /** Emitted during renaming.
  */
   type_signal_stopped signal_stopped();
 
-  typedef sigc::signal<void, double> type_signal_progress;
+  typedef sigc::signal<void(double)> type_signal_progress;
 
   /** Emitted after successful renaming (with no error_message string),
  * or when renaming stops due to an error (with an error message string).

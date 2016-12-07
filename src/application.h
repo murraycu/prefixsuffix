@@ -43,7 +43,7 @@ protected:
     const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line) override;
 
 private:
-  int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
+  int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options) override;
 
   void create_window();
 

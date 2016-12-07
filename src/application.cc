@@ -41,9 +41,6 @@ Application::Application()
 {
   Glib::set_application_name("PrefixSuffix");
 
-  signal_handle_local_options().connect(
-    sigc::mem_fun(*this, &Application::on_handle_local_options), false);
-
   add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "version", 'v',
     _("Show the application's version"));
 }

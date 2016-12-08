@@ -19,128 +19,55 @@
 #include "string_renamer.h"
 #include <iostream>
 #include <cstdlib>
+#include <gtest/gtest.h>
 
-bool
-check_prefix()
-{
+TEST(TestRenameStrings, Prefix) {
   const PrefixSuffix::StringRenamer renamer("oldprefix", "newprefix", "", "");
   Glib::ustring renamed = renamer.get_new_basename("oldprefixabc");
-  if (renamed != "newprefixabc") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("newprefixabc", renamed);
 
   renamed = renamer.get_new_basename("aoldprefixabc");
-  if (renamed != "aoldprefixabc") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
-
-  return true;
+  EXPECT_EQ("aoldprefixabc", renamed);
 }
 
-bool
-check_prefix_remove()
-{
+TEST(TestRenameStrings, PrefixRemove) {
   const PrefixSuffix::StringRenamer renamer("oldprefix", "", "", "");
   Glib::ustring renamed = renamer.get_new_basename("oldprefixabc");
-  if (renamed != "abc") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("abc", renamed);
 
   renamed = renamer.get_new_basename("aoldprefixabc");
-  if (renamed != "aoldprefixabc") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
-
-  return true;
+  EXPECT_EQ("aoldprefixabc", renamed);
 }
 
-bool
-check_suffix()
-{
+TEST(TestRenameStrings, Suffix) {
   const PrefixSuffix::StringRenamer renamer("", "", "oldsuffix", "newsuffix");
   Glib::ustring renamed = renamer.get_new_basename("abcoldsuffix");
-  if (renamed != "abcnewsuffix") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("abcnewsuffix", renamed);
 
   renamed = renamer.get_new_basename("abcoldsuffixa");
-  if (renamed != "abcoldsuffixa") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
-
-  return true;
+  EXPECT_EQ("abcoldsuffixa", renamed);
 }
 
-bool
-check_extension_suffix()
-{
+TEST(TestRenameStrings, ExtensionSuffix) {
   // Check that it doesn't change when it shouldn't:
   const PrefixSuffix::StringRenamer renamer("", "", ".jpg", ".png");
   Glib::ustring renamed = renamer.get_new_basename("something");
-  if (renamed != "something") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("something", renamed);
 
   // Check that it doesn't change when it shouldn't, again:
   renamed = renamer.get_new_basename("something.foo");
-  if (renamed != "something.foo") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("something.foo", renamed);
 
   // Check that it does change when it should:
   renamed = renamer.get_new_basename("something.jpg");
-  if (renamed != "something.png") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
-
-  return true;
+  EXPECT_EQ("something.png", renamed);
 }
 
-bool
-check_suffix_remove()
-{
+TEST(TestRenameStrings, SuffixRemove) {
   const PrefixSuffix::StringRenamer renamer("", "", "suffixtoremove", "");
   Glib::ustring renamed = renamer.get_new_basename("abcsuffixtoremove");
-  if (renamed != "abc") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
+  EXPECT_EQ("abc", renamed);
 
   renamed = renamer.get_new_basename("abcsuffixtoremovea");
-  if (renamed != "abcsuffixtoremovea") {
-    std::cerr << G_STRFUNC << ": Unexpected result: " << renamed << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-int
-main()
-{
-  if (!check_prefix())
-    return EXIT_FAILURE;
-
-  if (!check_prefix_remove())
-    return EXIT_FAILURE;
-
-  if (!check_suffix())
-    return EXIT_FAILURE;
-
-  if (!check_suffix_remove())
-    return EXIT_FAILURE;
-
-  if (!check_extension_suffix())
-    return EXIT_FAILURE;
-
-  return EXIT_SUCCESS;
+  EXPECT_EQ("abcsuffixtoremovea", renamed);
 }

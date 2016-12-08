@@ -1,1 +1,8 @@
 data/prefixsuffix.desktop.in
+googletest/googlemock/src/gmock-spec-builders.cc
+googletest/googlemock/test/gmock-matchers_test.cc
+googletest/googletest/include/gtest/internal/gtest-filepath.h
+googletest/googletest/src/gtest.cc
+googletest/googletest/test/gtest-filepath_test.cc
+googletest/googletest/test/gtest_catch_exceptions_test.py
+googletest/googletest/test/gtest_unittest.cc

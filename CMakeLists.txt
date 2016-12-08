@@ -57,6 +57,7 @@ set(SOURCE_FILES
     src/bakery/Configuration/Client.h
     src/application.cc
     src/application.h
+    src/constants.h
     src/file_renamer.cc
     src/file_renamer.h
     src/main.cc

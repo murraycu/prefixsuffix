@@ -11,7 +11,7 @@ add_subdirectory (tests)
 
 
 include(FindPkgConfig)
-pkg_check_modules(DEPS REQUIRED gtkmm-3.0)
+pkg_check_modules(DEPS REQUIRED gtkmm-4.0)
 
 # Let the C++ compiler find the #include files for our own source code:
 include_directories(

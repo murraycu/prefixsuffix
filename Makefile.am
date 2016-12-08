@@ -20,6 +20,7 @@ prefixsuffix_SOURCES = \
 	src/main.cc \
 	src/application.h \
 	src/application.cc \
+	src/constants.h \
 	src/mainwindow.h \
 	src/mainwindow.cc \
 	src/file_renamer.h \

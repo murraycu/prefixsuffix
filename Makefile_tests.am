@@ -70,8 +70,8 @@ TESTS = \
 	tests/test_rename_strings
 
 prefixsuffix_includes = -I$(top_builddir)/src -I$(top_srcdir)/src -I$(top_builddir) -I$(top_srcdir)
-tests_cppflags = $(prefixsuffix_includes) $(DEPS_CFLAGS) $(PREFIXSUFFIX_WXXFLAGS) \
-  -I$(top_srcdir)/$(gtest_top)/include
+tests_cppflags = $(prefixsuffix_includes) $(DEPS_CFLAGS) $(PREFIXSUFFIX_GTEST_WXXFLAGS) \
+  -isystem $(top_srcdir)/$(gtest_top)/include
 tests_ldadd = $(DEPS_LIBS) $(top_builddir)/libgtest.a
 tests_ldflags = -pthread
 

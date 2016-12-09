@@ -29,6 +29,15 @@ MM_ARG_ENABLE_WARNINGS([PREFIXSUFFIX_WXXFLAGS],
                        [G GDK GDK_PIXBUF GTK GLIBMM GDKMM CAIROMM PANGOMM GTKMM SIGCXX])
 
 
+# TODO: Just use the regular PREFIXSUFFIX_WXXFLAGS,
+# (and use -I instead of -isystem in Makefile_tests.am)
+# if this googletest problem is fixed:
+# https://github.com/google/googletest/issues/533
+MM_ARG_ENABLE_WARNINGS([PREFIXSUFFIX_GTEST_WXXFLAGS],
+                       [-Wall],
+                       [-pedantic -Wall -Wextra -Wshadow -Wformat-security -Wno-missing-field-initializers -DGSEAL_ENABLE],
+                       [])
+
 # i18n
 IT_PROG_INTLTOOL([0.35])
 

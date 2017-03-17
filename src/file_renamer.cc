@@ -168,12 +168,10 @@ FileRenamer::on_directory_next_files(
   const Glib::RefPtr<Gio::File>& directory,
   const Glib::RefPtr<Gio::FileEnumerator>& enumerator)
 {
-  typedef std::list<std::string> type_list_strings;
-  type_list_strings list_folders;
+  std::list<std::string> list_folders;
 
   try {
-    typedef std::list<Glib::RefPtr<Gio::FileInfo>> type_list_file_info;
-    const type_list_file_info list_info = enumerator->next_files_finish(result);
+    const auto list_info = enumerator->next_files_finish(result);
 
     // If we have finished enumerating this directory:
     if (list_info.empty()) {

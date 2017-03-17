@@ -84,8 +84,6 @@ MainWindow::MainWindow(
   m_conf_client.load(); // Fill the widgets from the stored preferences.
 
   // set_statusbar(m_Status);
-
-  show_all_children();
 }
 
 MainWindow::~MainWindow()
